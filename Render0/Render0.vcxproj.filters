@@ -22,15 +22,24 @@
     <ClCompile Include="src\render0.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\render0\core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\render0\render0.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\RZ_API\RZ_api.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\util\Log.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RZ_API\core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RZ_API\Log_api.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

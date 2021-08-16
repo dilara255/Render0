@@ -10,4 +10,16 @@
 	#error falta suporte pra linux ainda : /
 #endif
 
+#ifdef DEBUG
+#define CONFIG_NAME "Debug"
+#else
+#define CONFIG_NAME "Release"
+#endif
+
+#ifdef Win64
+#define PLATFORM_NAME "Win-64"
+#else
+#define PLATFORM_NAME "Win-32"
+#endif
+
 

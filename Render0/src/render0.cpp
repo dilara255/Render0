@@ -1,47 +1,69 @@
 #include "render0/render0.h"
 #include "RZ_API/RZ_api.h"
 
+struct windowParams{
+    GLFWwindow* window;
+    int width = 640;
+    int height = 480;
+    const char* title = "Viewer0 " PLATFORM_NAME " " CONFIG_NAME;
+} renderWindow ;
+
+
 namespace renderz {
 
-    int render()
-    {
-        GLFWwindow* window;
+    int init() {
+
+        RZ_TRACE("Criando janela...");
 
         /* Initialize the library */
-        if (!glfwInit())
+        if (!glfwInit()) {
+            RZ_ERROR("GLFW nao iniciou");
             return -1;
+        }
+        RZ_INFO("GLFW Iniciado");
 
         /* Create a windowed mode window and its OpenGL context */
-        window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-        if (!window)
+        renderWindow.window = glfwCreateWindow(renderWindow.width, renderWindow.height
+            , renderWindow.title, NULL, NULL);
+        if (!renderWindow.window)
         {
+            RZ_ERROR("Nao conseguiu obter janela");
             glfwTerminate();
             return -1;
         }
 
         /* Make the window's context current */
-        glfwMakeContextCurrent(window);
+        glfwMakeContextCurrent(renderWindow.window);
 
-        /* Loop until the user closes the window */
-        while (!glfwWindowShouldClose(window))
-        {
-            /* Render here */
-            glClear(GL_COLOR_BUFFER_BIT);
+        RZ_INFO("\nJanela criada!");
 
-            glBegin(GL_TRIANGLES);
-            glVertex2f(-0.5f, -0.5f);
-            glVertex2f(0.0f, 0.5f);
-            glVertex2f(0.5f, -0.5f);
-            glEnd();
+        return 1;
+    }
 
-            /* Swap front and back buffers */
-            glfwSwapBuffers(window);
 
-            /* Poll for and process events */
-            glfwPollEvents();
-        }
+    int render() {
+        
+        /* Render here */
+        glClear(GL_COLOR_BUFFER_BIT);
 
+        /*Define triangle*/
+        glBegin(GL_TRIANGLES);
+        glVertex2f(-0.5f, -0.5f);
+        glVertex2f(0.0f, 0.5f);
+        glVertex2f(0.5f, -0.5f);
+        glEnd();
+
+        /* Swap front and back buffers */
+        glfwSwapBuffers(renderWindow.window);
+
+        /* Poll for and process events */
+        glfwPollEvents();
+
+        return !glfwWindowShouldClose(renderWindow.window);
+    }
+
+    void terminate() {
         glfwTerminate();
-        return 0;
+        RZ_TRACE("GLFW fechado");
     }
 }
