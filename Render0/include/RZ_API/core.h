@@ -1,6 +1,7 @@
 #pragma once
 
 #ifdef RZ_PLATFORM_WINDOWS
+	#define SYSTEM_NAME "Windows"
 	#ifdef RZ_BUILD_DLL
 		#define	RZ_API __declspec(dllexport)
 	#else
@@ -11,15 +12,17 @@
 #endif
 
 #ifdef DEBUG
-#define CONFIG_NAME "Debug"
-#else
-#define CONFIG_NAME "Release"
+	#define CONFIG_NAME "Debug"
+#elif RELEASE 
+	#define CONFIG_NAME "Release"
+#elif DISTRIB 
+	#define CONFIG_NAME "Distribution"
 #endif
 
-#ifdef Win64
-#define PLATFORM_NAME "Win-64"
-#else
-#define PLATFORM_NAME "Win-32"
+#ifdef X64
+	#define PLATFORM_NAME "64 bits"
+#elif X86
+	#define PLATFORM_NAME "32 bits"
 #endif
 
 

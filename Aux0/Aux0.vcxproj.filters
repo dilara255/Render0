@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="APIs">
+      <UniqueIdentifier>{5212827C-3E49-830D-E735-6910D34BFF0E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="APIs\miscStdHeaders.h">
+      <Filter>APIs</Filter>
+    </ClInclude>
+    <ClInclude Include="include\log.h" />
+    <ClInclude Include="APIs\logAPI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\miscStdHeaders.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

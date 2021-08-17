@@ -16,26 +16,76 @@ namespace util {
 #define L_ERROR 3
 #define L_CRITICAL 4
 
+//Eventualmente criar macros "DEF_IFNOT_DISTRIB"?
+
 //MACROS log Render0
-#define RZ_CRITICAL(...) util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
-                                    , L_CRITICAL, __FILE__, __LINE__)
-#define RZ_ERROR(...)    util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
-                                    , L_ERROR, __FILE__, __LINE__)
-#define RZ_WARN(...)     util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
-                                    , L_WARN, __FILE__, __LINE__)
-#define RZ_INFO(...)     util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
-                                    , L_INFO, __FILE__, __LINE__)
-#define RZ_TRACE(...)    util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
-                                    , L_TRACE, __FILE__, __LINE__)
+#ifdef DISTRIB
+    #define RZ_CRITICAL(...)
+#else
+    #define RZ_CRITICAL(...) util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
+                                        , L_CRITICAL, __FILE__, __LINE__)
+#endif
+
+#ifdef DISTRIB
+    #define RZ_ERROR(...)
+#else
+    #define RZ_ERROR(...)    util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
+                                        , L_ERROR, __FILE__, __LINE__)
+#endif
+
+#ifdef DISTRIB
+    #define RZ_WARN(...)
+#else
+    #define RZ_WARN(...)     util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
+                                         , L_WARN, __FILE__, __LINE__)
+#endif
+
+#ifdef DISTRIB
+    #define RZ_INFO(...)
+#else
+    #define RZ_INFO(...)     util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
+                                         , L_INFO, __FILE__, __LINE__)
+#endif
+
+#ifdef DISTRIB
+    #define RZ_TRACE(...)
+#else
+    #define RZ_TRACE(...)    util::rzLog(__VA_ARGS__, util::Log::GetRenderLogger()\
+                                        , L_TRACE, __FILE__, __LINE__)
+#endif
 
 //MACROS log Viewr0
-#define VZ_CRITICAL(...) util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
-                                    , L_CRITICAL, __FILE__, __LINE__)
-#define VZ_ERROR(...)    util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
-                                    , L_ERROR, __FILE__, __LINE__)
-#define VZ_WARN(...)     util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
-                                    , L_WARN, __FILE__, __LINE__)
-#define VZ_INFO(...)     util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
-                                    , L_INFO, __FILE__, __LINE__)
-#define VZ_TRACE(...)    util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
-                                    , L_TRACE, __FILE__, __LINE__)
+#ifdef DISTRIB
+    #define VZ_CRITICAL(...)
+#else
+    #define VZ_CRITICAL(...) util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
+                                        , L_CRITICAL, __FILE__, __LINE__)
+#endif
+
+#ifdef DISTRIB
+    #define VZ_ERROR(...)
+#else
+    #define VZ_ERROR(...)    util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
+                                         , L_ERROR, __FILE__, __LINE__)
+#endif
+
+#ifdef DISTRIB
+    #define VZ_WARN(...)
+#else
+    #define VZ_WARN(...)     util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
+                                        , L_WARN, __FILE__, __LINE__)
+#endif
+
+#ifdef DISTRIB
+    #define VZ_INFO(...)
+#else
+    #define VZ_INFO(...)     util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
+                                        , L_INFO, __FILE__, __LINE__)
+#endif
+
+#ifdef DISTRIB
+    #define VZ_TRACE(...)
+#else
+    #define VZ_TRACE(...)    util::rzLog(__VA_ARGS__, util::Log::GetViewerLogger()\
+                                         , L_TRACE, __FILE__, __LINE__)
+#endif

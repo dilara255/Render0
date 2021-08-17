@@ -5,7 +5,7 @@ struct windowParams{
     GLFWwindow* window;
     int width = 640;
     int height = 480;
-    const char* title = "Viewer0 " PLATFORM_NAME " " CONFIG_NAME;
+    const char* title = "Viewer0 " SYSTEM_NAME "-" PLATFORM_NAME " " CONFIG_NAME;
 } renderWindow ;
 
 
@@ -42,7 +42,7 @@ namespace renderz {
 
 
     int render() {
-        
+                
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -52,7 +52,7 @@ namespace renderz {
         glVertex2f(0.0f, 0.5f);
         glVertex2f(0.5f, -0.5f);
         glEnd();
-
+        
         /* Swap front and back buffers */
         glfwSwapBuffers(renderWindow.window);
 

@@ -2,7 +2,12 @@
 .vs/
 bin/
 bin-int/
+_exes/
 
 #files
 notas.txt
 *.user
+CleanBins.bat
+CleanLibs.bat
+CleanAll.bat
+Aux0/lib/**.lib

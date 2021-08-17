@@ -1,9 +1,14 @@
 #include "RZ_api.h"
 #include "Log_api.h"
+#include "logAPI.h"
 
 void mainLoop();
 
 int main(void){
+
+	VZ_TRACE("\nAux funciona?");
+	testAux();
+	VZ_INFO("\n...suponho que isso seja um sim...?");
 
 	VZ_TRACE("\nIniciando Render...");
 
