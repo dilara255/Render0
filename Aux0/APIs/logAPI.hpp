@@ -1,13 +1,14 @@
 #pragma once
 
-#include "core.h"
-#ifndef RZ_BUILD_DLL
-    #include "../util/Log.h"
+#include "core.hpp"
+
+#ifndef RZ_BUILD_LIB
+    #include "../include/log.hpp"
 #endif
 
 namespace util {
-    RZ_API void rzLog(const char* message, std::shared_ptr<spdlog::logger> logger
-		             , const int degree, const char* file, const int line);
+    void rzLog(const char* message, std::shared_ptr<spdlog::logger> logger
+        , const int degree, const char* file, const int line);
 }
 
 #define L_TRACE 0

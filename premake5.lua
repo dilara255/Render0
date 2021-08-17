@@ -18,6 +18,20 @@ workspace "Render"
 
 	outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+	IncludeDir = {}
+	IncludeDir["GLAD"]    = "%{wks.location}/Dependencies/glad/include"
+	IncludeDir["GLFW"]    = "%{wks.location}/Dependencies/GLFW/include"
+	IncludeDir["GLFW64"]  = "%{wks.location}/Dependencies/GLFW64/include"
+	IncludeDir["SPDLOG"]  = "%{wks.location}/Dependencies/spdlog/include"
+	IncludeDir["AUXAPIS"] = "%{wks.location}/Aux0/APIs"
+	IncludeDir["RZAPIS"]  = "%{wks.location}/Render0/include/RZ_API"
+
+	LibDir = {}
+	LibDir["GLFW"]   = "%{wks.location}/Dependencies/GLFW/lib-vc2019"
+	LibDir["GLFW64"] = "%{wks.location}/Dependencies/GLFW64/lib-vc2019"
+	LibDir["AUX0"]   = ("%{wks.location}/Aux0/lib/" .. outputdir)
+	LibDir["GLAD"]   = ("%{wks.location}/Dependencies/glad/lib/" .. outputdir)
+
 project "Render0"
 	location "Render0"
 	kind "SharedLib"
@@ -27,38 +41,44 @@ project "Render0"
 
 	dependson {"Aux0"}
 
+	defines {"RENDER0", "GLFW_INCLUDE_NONE"}
+
 	flags
 	{
 		"MultiProcessorCompile"
 	}
 
-	links ("%{wks.location}/Aux0/lib/" .. outputdir .. "/Aux0.lib")
+	links {"%{LibDir.AUX0}/Aux0.lib", "OpenGL32", "%{LibDir.GLAD}/Glad.lib"}
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+	shaderdir = "%{prj.location}/src/shaders"
 
 	files
 	{
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/include/**.h"
+		"%{prj.name}/include/**.h",
+		"%{prj.name}/src/**.hpp",
+		"%{prj.name}/include/**.hpp"
 	}
 
 	includedirs
 	{
 		"%{wks.location}/Dependencies/spdlog/include",
 		"%{prj.name}/include",
-		"%{prj.name}/include/RZ_API",
-		"%{wks.location}/Aux0/APIs"
+		"%{IncludeDir.RZAPIS}",
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.AUXAPIS}"
 	}
 
 	filter "architecture:x86"
 		includedirs
 		{
-			"%{wks.location}/Dependencies/GLFW/include",
+			"%{IncludeDir.GLFW}"
 		}
 
-		libdirs "%{wks.location}/Dependencies/GLFW/lib-vc2019"
+		libdirs "%{LibDir.GLFW}"
 		links "glfw3_mt"
 		defines	"X86"
 
@@ -66,10 +86,10 @@ project "Render0"
 	filter "architecture:x86_64"
 		includedirs
 		{
-			"%{wks.location}/Dependencies/GLFW64/include",
+			"%{IncludeDir.GLFW64}"
 		}
 
-		libdirs "%{wks.location}/Dependencies/GLFW64/lib-vc2019"
+		libdirs "%{LibDir.GLFW64}"
 		links "glfw3_mt"
 		defines "X64"
 
@@ -82,9 +102,6 @@ project "Render0"
 			"RZ_PLATFORM_WINDOWS",
 			"RZ_BUILD_DLL"
 		}
-
-		links { "OpenGL32" }
-
 
 	filter "configurations:Debug"
 		defines "DEBUG"
@@ -100,7 +117,10 @@ project "Render0"
 
 	filter {}
 	postbuildcommands{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Viewer0")
+		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Viewer0")		
+	}
+	postbuildcommands{
+		("{COPY} ".. shaderdir .." ../bin/" .. outputdir .. "/Viewer0/shaders")	
 	}
 
 project "Viewer0"
@@ -110,14 +130,16 @@ project "Viewer0"
 	cppdialect "C++17"
 	staticruntime "off"
 
-	dependson {"Render0"}
+	dependson {"Render0", "Aux0"}
+
+	defines "VIEWER0"
 
 	flags
 	{
 		"MultiProcessorCompile"
 	}
 
-	links ("%{wks.location}/Aux0/lib/" .. outputdir .. "/Aux0.lib")
+	links ("%{LibDir.AUX0}/Aux0.lib")
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -126,14 +148,16 @@ project "Viewer0"
 	{
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/include/**.h"
+		"%{prj.name}/include/**.h",
+		"%{prj.name}/src/**.hpp",
+		"%{prj.name}/include/**.hpp"
 	}
 
 	includedirs
 	{
-		"%{wks.location}/Render0/include/RZ_API",
-		"%{wks.location}/Dependencies/spdlog/include",
-		"%{wks.location}/Aux0/APIs"
+		"%{IncludeDir.RZAPIS}",
+		"%{IncludeDir.SPDLOG}",
+		"%{IncludeDir.AUXAPIS}"
 	}
 
 	links{
@@ -144,7 +168,10 @@ project "Viewer0"
 		systemversion "latest"
 		buildoptions "/MT"
 
-		defines "RZ_PLATFORM_WINDOWS"
+		defines {
+			"RZ_PLATFORM_WINDOWS",
+			"RZ_BUILD_APP"
+		}
 
 	filter "architecture:x86_64"
 		defines "X64"
@@ -174,7 +201,7 @@ project "Aux0"
 	pchheader "miscStdHeaders.h"
 	pchsource "%{prj.name}/src/miscStdHeaders.cpp"
 
-	libdir = ("%{prj.location}/lib/" .. outputdir .. "/")
+	defines "AUX0"
 
 	flags
 	{
@@ -189,7 +216,10 @@ project "Aux0"
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/include/**.h",
-		"%{prj.name}/APIs/**.h"
+		"%{prj.name}/APIs/**.h",
+		"%{prj.name}/src/**.hpp",
+		"%{prj.name}/include/**.hpp",
+		"%{prj.name}/APIs/**.hpp"
 	}
 
 	filter "architecture:x86"
@@ -198,10 +228,10 @@ project "Aux0"
 			"%{wks.location}/Dependencies/GLFW/include",
 			"%{wks.location}/Dependencies/spdlog/include",
 			"%{prj.name}/include",
-			"%{prj.name}/APIs"
+			"%{IncludeDir.AUXAPIS}"
 		}
 
-		libdirs "%{wks.location}/Dependencies/GLFW/lib-vc2019"
+		libdirs "%{LibDir.GLFW}"
 		links "glfw3_mt"
 		defines	"X86"
 
@@ -209,13 +239,13 @@ project "Aux0"
 	filter "architecture:x86_64"
 		includedirs
 		{
-			"%{wks.location}/Dependencies/GLFW64/include",
-			"%{wks.location}/Dependencies/spdlog/include",
+			"%{IncludeDir.GLFW64}",
+			"%{IncludeDir.SPDLOG}",
 			"%{prj.name}/include",
-			"%{prj.name}/APIs"
+			"%{IncludeDir.AUXAPIS}"
 		}
 
-		libdirs "%{wks.location}/Dependencies/GLFW64/lib-vc2019"
+		libdirs "%{LibDir.GLFW64}"
 		links "glfw3_mt"
 		defines "X64"
 
@@ -226,7 +256,7 @@ project "Aux0"
 
 		defines{
 			"RZ_PLATFORM_WINDOWS",
-			"RZ_BUILD_DLL"
+			"RZ_BUILD_LIB"
 		}
 
 		links { "OpenGL32" }
@@ -246,5 +276,5 @@ project "Aux0"
 
 	filter {}
 	postbuildcommands{
-		("{COPY} %{cfg.buildtarget.relpath} " .. libdir)
+		("{COPY} %{cfg.buildtarget.relpath} %{LibDir.AUX0}")
 	}

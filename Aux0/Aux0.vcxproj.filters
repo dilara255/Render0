@@ -4,16 +4,26 @@
     <Filter Include="APIs">
       <UniqueIdentifier>{5212827C-3E49-830D-E735-6910D34BFF0E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{89AF369E-F58E-B539-FEA6-40106A051C9B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="APIs\core.hpp">
+      <Filter>APIs</Filter>
+    </ClInclude>
+    <ClInclude Include="APIs\logAPI.hpp">
+      <Filter>APIs</Filter>
+    </ClInclude>
     <ClInclude Include="APIs\miscStdHeaders.h">
       <Filter>APIs</Filter>
     </ClInclude>
-    <ClInclude Include="include\log.h" />
-    <ClInclude Include="APIs\logAPI.h" />
+    <ClInclude Include="include\log.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp">

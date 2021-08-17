@@ -1,8 +1,8 @@
 #pragma once
 
-#include <memory>
+#include "miscStdHeaders.h"
 
-#include "core.h"
+#include "core.hpp"
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/stdout_color_sinks.h"
 
@@ -11,7 +11,7 @@ namespace util {
 	class Log
 	{
 	public:
-		RZ_API static void init();
+		static void init();
 		inline static std::shared_ptr<spdlog::logger>& GetRenderLogger() {
 			if (!initialized) init();  return s_RenderLogger;
 		}
@@ -20,9 +20,9 @@ namespace util {
 		}
 
 	private:
-		RZ_API static std::shared_ptr<spdlog::logger> s_RenderLogger;
-		RZ_API static std::shared_ptr<spdlog::logger> s_ViewerLogger;
-		RZ_API static int initialized;
+		static std::shared_ptr<spdlog::logger> s_RenderLogger;
+		static std::shared_ptr<spdlog::logger> s_ViewerLogger;
+		static int initialized;
 	};
 
 }

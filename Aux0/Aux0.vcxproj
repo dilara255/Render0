@@ -133,7 +133,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AUX0;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Dependencies\GLFW\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -152,7 +152,7 @@
       <AdditionalLibraryDirectories>..\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Debug-windows-x86\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Aux0\Aux0.lib $(ProjectDir)\lib\Debug-windows-x86 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Aux0\Aux0.lib $(ProjectDir)\lib\Debug-windows-x86 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Debug-windows-x86\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Debug-windows-x86 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Debug-windows-x86 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -160,7 +160,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AUX0;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Dependencies\GLFW64\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
@@ -179,7 +179,7 @@
       <AdditionalLibraryDirectories>..\Dependencies\GLFW64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Aux0\Aux0.lib $(ProjectDir)\lib\Debug-windows-x86_64 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Aux0\Aux0.lib $(ProjectDir)\lib\Debug-windows-x86_64 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Debug-windows-x86_64 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Debug-windows-x86_64 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -187,7 +187,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AUX0;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Dependencies\GLFW\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -209,7 +209,7 @@
       <AdditionalLibraryDirectories>..\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Release-windows-x86\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Aux0\Aux0.lib $(ProjectDir)\lib\Release-windows-x86 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Aux0\Aux0.lib $(ProjectDir)\lib\Release-windows-x86 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Release-windows-x86\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Release-windows-x86 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Release-windows-x86 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -217,7 +217,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AUX0;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Dependencies\GLFW64\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -239,7 +239,7 @@
       <AdditionalLibraryDirectories>..\Dependencies\GLFW64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Release-windows-x86_64\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Aux0\Aux0.lib $(ProjectDir)\lib\Release-windows-x86_64 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Aux0\Aux0.lib $(ProjectDir)\lib\Release-windows-x86_64 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Release-windows-x86_64\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Release-windows-x86_64 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Release-windows-x86_64 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
@@ -247,7 +247,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AUX0;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Dependencies\GLFW\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -269,7 +269,7 @@
       <AdditionalLibraryDirectories>..\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Dist-windows-x86\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Aux0\Aux0.lib $(ProjectDir)\lib\Dist-windows-x86 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Aux0\Aux0.lib $(ProjectDir)\lib\Dist-windows-x86 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Dist-windows-x86\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Dist-windows-x86 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Dist-windows-x86 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -277,7 +277,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>AUX0;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\Dependencies\GLFW64\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -299,13 +299,14 @@
       <AdditionalLibraryDirectories>..\Dependencies\GLFW64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Dist-windows-x86_64\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Aux0\Aux0.lib $(ProjectDir)\lib\Dist-windows-x86_64 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Aux0\Aux0.lib $(ProjectDir)\lib\Dist-windows-x86_64 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Dist-windows-x86_64\Aux0\Aux0.lib\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Dist-windows-x86_64 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Aux0\Aux0.lib $(SolutionDir)\Aux0\lib\Dist-windows-x86_64 &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="APIs\logAPI.h" />
+    <ClInclude Include="APIs\core.hpp" />
+    <ClInclude Include="APIs\logAPI.hpp" />
     <ClInclude Include="APIs\miscStdHeaders.h" />
-    <ClInclude Include="include\log.h" />
+    <ClInclude Include="include\log.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\log.cpp" />

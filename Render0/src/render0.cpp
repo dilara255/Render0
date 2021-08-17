@@ -1,13 +1,5 @@
-#include "render0/render0.h"
-#include "RZ_API/RZ_api.h"
-
-struct windowParams{
-    GLFWwindow* window;
-    int width = 640;
-    int height = 480;
-    const char* title = "Viewer0 " SYSTEM_NAME "-" PLATFORM_NAME " " CONFIG_NAME;
-} renderWindow ;
-
+#include "render0/render0.hpp"
+#include "RZ_API/RZ_api.hpp"
 
 namespace renderz {
 
@@ -36,6 +28,15 @@ namespace renderz {
         glfwMakeContextCurrent(renderWindow.window);
 
         RZ_INFO("\nJanela criada!");
+
+        if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) 
+        {
+            RZ_ERROR("Nao conseguiu carregar openGL");
+            glfwTerminate();
+            return -1;
+        }
+
+        RZ_INFO("\nOpenGL carregado!");
 
         return 1;
     }

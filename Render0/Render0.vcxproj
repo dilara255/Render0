@@ -138,8 +138,8 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -151,20 +151,21 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\Aux0\lib\Debug-windows-x86\Aux0.lib;glfw3_mt.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Aux0\lib\Debug-windows-x86\Aux0.lib;OpenGL32.lib;..\Dependencies\glad\lib\Debug-windows-x86\Glad.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Debug-windows-x86\Render0\Render0.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Debug-windows-x86\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Render0\Render0.dll ..\bin\Debug-windows-x86\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Render0\Render0.dll ..\bin\Debug-windows-x86\Viewer0 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Debug-windows-x86\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Render0\Render0.dll ..\bin\Debug-windows-x86\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Render0\Render0.dll ..\bin\Debug-windows-x86\Viewer0 &gt; nul)
+IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders ..\bin\Debug-windows-x86\Viewer0\shaders &gt; nul) ELSE (xcopy /Q /Y /I $(ProjectDir)\src\shaders ..\bin\Debug-windows-x86\Viewer0\shaders &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -176,20 +177,21 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>..\Aux0\lib\Debug-windows-x86_64\Aux0.lib;glfw3_mt.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Aux0\lib\Debug-windows-x86_64\Aux0.lib;OpenGL32.lib;..\Dependencies\glad\lib\Debug-windows-x86_64\Glad.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Dependencies\GLFW64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Debug-windows-x86_64\Render0\Render0.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Render0\Render0.dll ..\bin\Debug-windows-x86_64\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Render0\Render0.dll ..\bin\Debug-windows-x86_64\Viewer0 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Render0\Render0.dll ..\bin\Debug-windows-x86_64\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Render0\Render0.dll ..\bin\Debug-windows-x86_64\Viewer0 &gt; nul)
+IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders ..\bin\Debug-windows-x86_64\Viewer0\shaders &gt; nul) ELSE (xcopy /Q /Y /I $(ProjectDir)\src\shaders ..\bin\Debug-windows-x86_64\Viewer0\shaders &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -204,20 +206,21 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\Aux0\lib\Release-windows-x86\Aux0.lib;glfw3_mt.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Aux0\lib\Release-windows-x86\Aux0.lib;OpenGL32.lib;..\Dependencies\glad\lib\Release-windows-x86\Glad.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Release-windows-x86\Render0\Render0.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Release-windows-x86\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Render0\Render0.dll ..\bin\Release-windows-x86\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Render0\Render0.dll ..\bin\Release-windows-x86\Viewer0 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Release-windows-x86\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Render0\Render0.dll ..\bin\Release-windows-x86\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Render0\Render0.dll ..\bin\Release-windows-x86\Viewer0 &gt; nul)
+IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders ..\bin\Release-windows-x86\Viewer0\shaders &gt; nul) ELSE (xcopy /Q /Y /I $(ProjectDir)\src\shaders ..\bin\Release-windows-x86\Viewer0\shaders &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -232,20 +235,21 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\Aux0\lib\Release-windows-x86_64\Aux0.lib;glfw3_mt.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Aux0\lib\Release-windows-x86_64\Aux0.lib;OpenGL32.lib;..\Dependencies\glad\lib\Release-windows-x86_64\Glad.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Dependencies\GLFW64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Release-windows-x86_64\Render0\Render0.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Release-windows-x86_64\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Render0\Render0.dll ..\bin\Release-windows-x86_64\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Render0\Render0.dll ..\bin\Release-windows-x86_64\Viewer0 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Release-windows-x86_64\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Render0\Render0.dll ..\bin\Release-windows-x86_64\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Render0\Render0.dll ..\bin\Release-windows-x86_64\Viewer0 &gt; nul)
+IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders ..\bin\Release-windows-x86_64\Viewer0\shaders &gt; nul) ELSE (xcopy /Q /Y /I $(ProjectDir)\src\shaders ..\bin\Release-windows-x86_64\Viewer0\shaders &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -260,20 +264,21 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\Aux0\lib\Dist-windows-x86\Aux0.lib;glfw3_mt.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Aux0\lib\Dist-windows-x86\Aux0.lib;OpenGL32.lib;..\Dependencies\glad\lib\Dist-windows-x86\Glad.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Dependencies\GLFW\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Dist-windows-x86\Render0\Render0.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Dist-windows-x86\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Render0\Render0.dll ..\bin\Dist-windows-x86\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Render0\Render0.dll ..\bin\Dist-windows-x86\Viewer0 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Dist-windows-x86\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Render0\Render0.dll ..\bin\Dist-windows-x86\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Render0\Render0.dll ..\bin\Dist-windows-x86\Viewer0 &gt; nul)
+IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders ..\bin\Dist-windows-x86\Viewer0\shaders &gt; nul) ELSE (xcopy /Q /Y /I $(ProjectDir)\src\shaders ..\bin\Dist-windows-x86\Viewer0\shaders &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -288,24 +293,22 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>..\Aux0\lib\Dist-windows-x86_64\Aux0.lib;glfw3_mt.lib;OpenGL32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>..\Aux0\lib\Dist-windows-x86_64\Aux0.lib;OpenGL32.lib;..\Dependencies\glad\lib\Dist-windows-x86_64\Glad.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\Dependencies\GLFW64\lib-vc2019;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Dist-windows-x86_64\Render0\Render0.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Dist-windows-x86_64\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Render0\Render0.dll ..\bin\Dist-windows-x86_64\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Render0\Render0.dll ..\bin\Dist-windows-x86_64\Viewer0 &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Dist-windows-x86_64\Render0\Render0.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Render0\Render0.dll ..\bin\Dist-windows-x86_64\Viewer0 &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Render0\Render0.dll ..\bin\Dist-windows-x86_64\Viewer0 &gt; nul)
+IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders ..\bin\Dist-windows-x86_64\Viewer0\shaders &gt; nul) ELSE (xcopy /Q /Y /I $(ProjectDir)\src\shaders ..\bin\Dist-windows-x86_64\Viewer0\shaders &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\RZ_API\Log_api.h" />
-    <ClInclude Include="include\RZ_API\RZ_api.h" />
-    <ClInclude Include="include\RZ_API\core.h" />
-    <ClInclude Include="include\render0\render0.h" />
-    <ClInclude Include="include\util\Log.h" />
+    <ClInclude Include="include\RZ_API\RZ_api.hpp" />
+    <ClInclude Include="include\render0\render0.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Log.cpp" />
     <ClCompile Include="src\render0.cpp" />
+    <ClCompile Include="src\triangles.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
