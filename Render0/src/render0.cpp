@@ -1,7 +1,7 @@
 #include "render0/render0.hpp"
 #include "RZ_API/RZ_api.hpp"
 
-namespace renderz {
+namespace rz {
 
     int init() {
 
@@ -42,7 +42,7 @@ namespace renderz {
     }
 
 
-    int render() {
+    int renderTest0() {
                 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
@@ -67,4 +67,33 @@ namespace renderz {
         glfwTerminate();
         RZ_TRACE("GLFW fechado");
     }
+}
+
+int renderSimple(renderInfo_t renderInfo) {
+
+    RZ_INFO("Habilitando atributos vColor e vPosition...");
+
+    glEnableVertexAttribArray(vColor);
+    glEnableVertexAttribArray(vPosition);
+
+    RZ_INFO("Renderizar...");
+
+    while (!glfwWindowShouldClose(renderInfo.window))
+    {
+        glClearBufferfv(GL_COLOR, 0, renderInfo.clearColor);
+
+        glBindVertexArray(renderInfo.VAO);
+
+        glDrawArrays(GL_TRIANGLES, 0, renderInfo.numVertices);
+
+        glfwSwapBuffers(renderInfo.window);
+
+        glfwPollEvents();
+    }
+
+    RZ_INFO("Chega de triangulo...");
+
+    rz::terminate();
+
+    return 1;
 }

@@ -139,7 +139,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -165,7 +165,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -191,7 +191,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -220,7 +220,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -249,7 +249,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -278,7 +278,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -308,7 +308,8 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\render0.cpp" />
-    <ClCompile Include="src\triangles.cpp" />
+    <ClCompile Include="src\shaderManager.cpp" />
+    <ClCompile Include="src\testTriangle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

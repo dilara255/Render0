@@ -26,7 +26,10 @@
     <ClCompile Include="src\render0.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\triangles.cpp">
+    <ClCompile Include="src\shaderManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\testTriangle.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

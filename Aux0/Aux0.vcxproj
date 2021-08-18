@@ -134,7 +134,7 @@
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>AUX0;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\GLFW\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -161,7 +161,7 @@
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>AUX0;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\GLFW64\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -188,7 +188,7 @@
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>AUX0;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\GLFW\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -218,7 +218,7 @@
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>AUX0;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\GLFW64\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -248,7 +248,7 @@
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>AUX0;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\GLFW\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -278,7 +278,7 @@
       <PrecompiledHeaderFile>miscStdHeaders.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>AUX0;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_LIB;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\GLFW64\include;..\Dependencies\spdlog\include;include;APIs;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>

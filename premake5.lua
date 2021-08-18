@@ -22,6 +22,7 @@ workspace "Render"
 	IncludeDir["GLAD"]    = "%{wks.location}/Dependencies/glad/include"
 	IncludeDir["GLFW"]    = "%{wks.location}/Dependencies/GLFW/include"
 	IncludeDir["GLFW64"]  = "%{wks.location}/Dependencies/GLFW64/include"
+	IncludeDir["GLM"]     = "%{wks.location}/Dependencies/glm/include"
 	IncludeDir["SPDLOG"]  = "%{wks.location}/Dependencies/spdlog/include"
 	IncludeDir["AUXAPIS"] = "%{wks.location}/Aux0/APIs"
 	IncludeDir["RZAPIS"]  = "%{wks.location}/Render0/include/RZ_API"
@@ -65,6 +66,7 @@ project "Render0"
 
 	includedirs
 	{
+		"%{IncludeDir.GLM}",
 		"%{wks.location}/Dependencies/spdlog/include",
 		"%{prj.name}/include",
 		"%{IncludeDir.RZAPIS}",
@@ -155,6 +157,7 @@ project "Viewer0"
 
 	includedirs
 	{
+		"%{IncludeDir.GLM}",	
 		"%{IncludeDir.RZAPIS}",
 		"%{IncludeDir.SPDLOG}",
 		"%{IncludeDir.AUXAPIS}"
@@ -222,13 +225,17 @@ project "Aux0"
 		"%{prj.name}/APIs/**.hpp"
 	}
 
+	includedirs {
+		"%{IncludeDir.GLM}",
+		"%{IncludeDir.SPDLOG}",
+		"%{prj.name}/include",
+		"%{IncludeDir.AUXAPIS}"
+	}
+
 	filter "architecture:x86"
 		includedirs
 		{
-			"%{wks.location}/Dependencies/GLFW/include",
-			"%{wks.location}/Dependencies/spdlog/include",
-			"%{prj.name}/include",
-			"%{IncludeDir.AUXAPIS}"
+			"%{IncludeDir.GLFW}"
 		}
 
 		libdirs "%{LibDir.GLFW}"
@@ -239,10 +246,7 @@ project "Aux0"
 	filter "architecture:x86_64"
 		includedirs
 		{
-			"%{IncludeDir.GLFW64}",
-			"%{IncludeDir.SPDLOG}",
-			"%{prj.name}/include",
-			"%{IncludeDir.AUXAPIS}"
+			"%{IncludeDir.GLFW64}"
 		}
 
 		libdirs "%{LibDir.GLFW64}"

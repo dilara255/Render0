@@ -3,6 +3,7 @@
 bin/
 bin-int/
 _exes/
+Dependencies/glm/doc/
 
 #files
 notas.txt

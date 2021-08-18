@@ -1,32 +1,26 @@
 #include "RZ_api.hpp"
 #include "logAPI.hpp"
 
-void mainLoop1();
-void mainLoop2();
+void loop1();
 
 int main(void){
 
 	VZ_TRACE("\nIniciando Render...");
 
-	if (!renderz::init()) VZ_CRITICAL("\nRenderizador nao iniciou...");
+	if (!rz::init()) VZ_CRITICAL("\nRenderizador nao iniciou...");
 
 	/* Loop until the user closes the window */
-	mainLoop1();
-	
-	/* Terminate GLFW*/
-	renderz::terminate();
+	loop1();
 
 	VZ_TRACE("Readquirir contexto...");
 
-	if (!renderz::init()) VZ_CRITICAL("\nContexto nao voltou!");
+	if (!rz::init()) VZ_CRITICAL("\nContexto nao voltou!");
 
 	VZ_INFO("Contexto Readquirido...");
 
 	/* Loop until the user closes the window */
-	mainLoop2();
-
-	/* Terminate GLFW*/
-	renderz::terminate();
+	rz::testTriangle();
+	VZ_INFO("\nJanela fechada...");
 
 	VZ_TRACE("\nEnter para fechar...");
 	getc(stdin);
@@ -34,15 +28,13 @@ int main(void){
 	return 1;
 }
 
-void mainLoop1() {
+void loop1() {
 	bool keepGoing = true;
 	while (keepGoing) {
-		keepGoing = renderz::render();
+		keepGoing = rz::renderTest0();
 	}
 	VZ_INFO("\nJanela fechada...");
-}
 
-void mainLoop2() {
-	renderz::triangles();
-	VZ_INFO("\nJanela fechada...");
+	/* Terminate GLFW*/
+	rz::terminate();
 }
