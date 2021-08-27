@@ -7,14 +7,12 @@ namespace rz {
 
         RZ_TRACE("Criando janela...");
 
-        /* Initialize the library */
         if (!glfwInit()) {
             RZ_ERROR("GLFW nao iniciou");
             return -1;
         }
         RZ_INFO("GLFW Iniciado");
 
-        /* Create a windowed mode window and its OpenGL context */
         renderWindow.window = glfwCreateWindow(renderWindow.width, renderWindow.height
             , renderWindow.title, NULL, NULL);
         if (!renderWindow.window)
@@ -24,7 +22,6 @@ namespace rz {
             return -1;
         }
 
-        /* Make the window's context current */
         glfwMakeContextCurrent(renderWindow.window);
 
         RZ_INFO("\nJanela criada!");
@@ -37,13 +34,22 @@ namespace rz {
         }
 
         RZ_INFO("\nOpenGL carregado!");
+        RZ_TRACE("Vai preparar programas de shader..");
+
+        initShaderPrograms();
+
+        RZ_INFO("Shaders preparados");
 
         return 1;
     }
 
+    void terminate() {
+        glfwTerminate();
+        RZ_TRACE("GLFW fechado");
+    }
 
-    int renderTest0() {
-                
+    int renderTestLegacy() {
+
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -53,7 +59,7 @@ namespace rz {
         glVertex2f(0.0f, 0.5f);
         glVertex2f(0.5f, -0.5f);
         glEnd();
-        
+
         /* Swap front and back buffers */
         glfwSwapBuffers(renderWindow.window);
 
@@ -61,11 +67,6 @@ namespace rz {
         glfwPollEvents();
 
         return !glfwWindowShouldClose(renderWindow.window);
-    }
-
-    void terminate() {
-        glfwTerminate();
-        RZ_TRACE("GLFW fechado");
     }
 }
 
@@ -84,7 +85,43 @@ int renderSimple(renderInfo_t renderInfo) {
 
         glBindVertexArray(renderInfo.VAO);
 
-        glDrawArrays(GL_TRIANGLES, 0, renderInfo.numVertices);
+        glDrawArrays(renderInfo.mode, 0, renderInfo.numVertices);
+
+        glfwSwapBuffers(renderInfo.window);
+
+        glfwPollEvents();
+    }
+
+    RZ_INFO("Chega de triangulo...");
+
+    rz::terminate();
+
+    return 1;
+}
+
+int renderWithCamera(renderInfo_t renderInfo, CameraZ camera) {
+
+    RZ_INFO("Habilitando atributos vColor, vPosition e Matriz Projecao...");
+
+    glEnableVertexAttribArray(vColor);
+    glEnableVertexAttribArray(vPosition);
+    
+    glm::int32_t projectionLocation = glGetUniformLocation(shaderPrograms[SIMPLE_CAMERA].shaderProgramId
+                                                          , "vProjection");
+    
+    printf("\t\tLocalizacao uniform projecao: %i\n", projectionLocation);
+
+    glUniformMatrix4fv(projectionLocation, 1, false, &camera.cameraProjection[0][0]);
+
+    RZ_INFO("Renderizar...");
+
+    while (!glfwWindowShouldClose(renderInfo.window))
+    {
+        glClearBufferfv(GL_COLOR, 0, renderInfo.clearColor);
+
+        glBindVertexArray(renderInfo.VAO);
+
+        glDrawArrays(renderInfo.mode, 0, renderInfo.numVertices);
 
         glfwSwapBuffers(renderInfo.window);
 

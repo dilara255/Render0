@@ -4,14 +4,24 @@
 #include "RZ_API/RZ_api.hpp"
 #include "logAPI.hpp"
 
+CameraZ getTestCamera();
+renderInfo_t setupTestTriangleToRender(int shader);
+
 namespace rz {
 
     int testTriangle(void) {
-        return renderSimple(getTestTriangleInfo());
+        return renderSimple(setupTestTriangleToRender(SIMPLE));
+    }
+
+    int testTriangleWithCamera(void) {
+        RZ_TRACE("Desenhar triangulinho colorido de teste COM CAMERA...");
+        CameraZ camera = getTestCamera();
+        camera.updateCameraMatrix();
+        return renderWithCamera(setupTestTriangleToRender(SIMPLE_CAMERA), camera);
     }
 }
 
-renderInfo_t getTestTriangleInfo()
+renderInfo_t setupTestTriangleToRender(int shader)
 {
     GLuint  VAOs[NumVAOs];
     GLuint  Buffers[NumBuffers];
@@ -42,18 +52,13 @@ renderInfo_t getTestTriangleInfo()
 
     RZ_TRACE("Buffers preparados...");
 
-    shaderInfo_t  shaders[] =
-    {
-        { GL_VERTEX_SHADER, "shaders/triangles.vert" },
-        { GL_FRAGMENT_SHADER, "shaders/triangles.frag" },
-        { GL_NONE, NULL }
-    };
+    //shaders ---v
 
     RZ_TRACE("Carregar shaders...");
 
-    GLuint program = LoadShaders(shaders);
+    shaderPrograms[shader].shaderProgramId = LoadShaders(shaderPrograms[shader].shaderInfo);
     RZ_TRACE("Ligar programa...");
-    glUseProgram(program);
+    glUseProgram(shaderPrograms[shader].shaderProgramId);
 
     RZ_TRACE("Shaders ligados...");
 
@@ -64,8 +69,7 @@ renderInfo_t getTestTriangleInfo()
         , GL_TRUE, sizeof(VertexData)
         , BUFFER_OFFSET(0));
 
-    //glEnableVertexAttribArray(vColor);
-    //glEnableVertexAttribArray(vPosition);
+    //shaders ---^
 
     RZ_TRACE("Vai renderizar...");
 
@@ -78,8 +82,39 @@ renderInfo_t getTestTriangleInfo()
         black[3],
         VAOs[Triangles],
         NumVertices,
-        renderWindow.window
+        renderWindow.window,
+        GL_TRIANGLE_STRIP  
+        //GL_LINE_LOOP GL_POINTS
     };
 
     return renderInfo;
+}
+
+CameraZ getTestCamera() {
+    
+    RZ_TRACE("Inicializando camera...");
+
+    cameraState_t initialState;
+
+    initialState.lookAtActive = true;
+    initialState.perspectiveOn = true;
+
+    initialState.position = glm::vec3(-0.5f,0.5f,10);
+
+    initialState.lookatPosition = glm::vec3(0, 0, 0);
+    initialState.viewDirection = glm::vec3(0.1f, -0.1f, -1);
+    initialState.upDirection = glm::vec3(0, 1, 0);
+    initialState.sideDirection = glm::vec3(1, 0, 0);
+
+    initialState.orthoDistance = 10;
+    initialState.nearDist = 0.1f;
+    initialState.farDist = 100;
+    initialState.fovHor = radians(60);
+    initialState.fovVert = radians(60);
+
+    CameraZ camera(initialState);
+
+    RZ_INFO("Camera iniciada!");
+
+    return camera;
 }

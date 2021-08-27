@@ -303,10 +303,12 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\render0\camera.hpp" />
     <ClInclude Include="include\RZ_API\RZ_api.hpp" />
     <ClInclude Include="include\render0\render0.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\render0.cpp" />
     <ClCompile Include="src\shaderManager.cpp" />
     <ClCompile Include="src\testTriangle.cpp" />

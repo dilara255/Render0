@@ -9,3 +9,5 @@
 #include <cstdlib>
 
 #include "glm/glm.hpp"
+
+typedef glm::float32 radians;

@@ -8,8 +8,8 @@ int main(void){
 	VZ_TRACE("\nIniciando Render...");
 
 	if (!rz::init()) VZ_CRITICAL("\nRenderizador nao iniciou...");
-
-	/* Loop until the user closes the window */
+	/*
+	//Loop until the user closes the window
 	loop1();
 
 	VZ_TRACE("Readquirir contexto...");
@@ -18,8 +18,16 @@ int main(void){
 
 	VZ_INFO("Contexto Readquirido...");
 
-	/* Loop until the user closes the window */
+	//Loop until the user closes the window//
 	rz::testTriangle();
+	VZ_INFO("\nJanela fechada...");
+
+	VZ_TRACE("Readquirir contexto...");
+
+	if (!rz::init()) VZ_CRITICAL("\nContexto nao voltou!");
+	*/
+	/* Loop until the user closes the window */
+	rz::testTriangleWithCamera();
 	VZ_INFO("\nJanela fechada...");
 
 	VZ_TRACE("\nEnter para fechar...");
@@ -31,7 +39,7 @@ int main(void){
 void loop1() {
 	bool keepGoing = true;
 	while (keepGoing) {
-		keepGoing = rz::renderTest0();
+		keepGoing = rz::renderTestLegacy();
 	}
 	VZ_INFO("\nJanela fechada...");
 

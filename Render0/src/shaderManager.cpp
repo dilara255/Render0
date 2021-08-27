@@ -1,5 +1,44 @@
 #include "render0/render0.hpp"
 
+void initShaderPrograms() {
+    shaderPrograms[SIMPLE].shadersID = SIMPLE;
+    shaderPrograms[SIMPLE].shaderInfo[VERT] =
+        { GL_VERTEX_SHADER, "shaders/triangles.vert" };
+    shaderPrograms[SIMPLE].shaderInfo[FRAG] =
+        { GL_FRAGMENT_SHADER, "shaders/triangles.frag" };
+    shaderPrograms[SIMPLE].shaderInfo[NOT_USING] =
+        { GL_NONE, NULL };
+
+    shaderPrograms[SIMPLE_CAMERA].shadersID = SIMPLE_CAMERA;
+    shaderPrograms[SIMPLE_CAMERA].shaderInfo[VERT] =
+        { GL_VERTEX_SHADER, "shaders/trianglesWithCamera.vert" };
+    shaderPrograms[SIMPLE_CAMERA].shaderInfo[FRAG] =
+        { GL_FRAGMENT_SHADER, "shaders/trianglesWithCamera.frag" };
+    shaderPrograms[SIMPLE_CAMERA].shaderInfo[NOT_USING] =
+        { GL_NONE, NULL };
+}
+
+/*
+    //shaders ---v
+
+    RZ_TRACE("Carregar shaders...");
+
+    shaderPrograms[SIMPLE].shaderProgramId = LoadShaders(shaderPrograms[SIMPLE].shaderInfo);
+    RZ_TRACE("Ligar programa...");
+    glUseProgram(shaderPrograms[SIMPLE].shaderProgramId);
+
+    RZ_TRACE("Shaders ligados...");
+
+    glVertexAttribPointer(vPosition, 2, GL_FLOAT
+        , GL_FALSE, sizeof(VertexData)
+        , BUFFER_OFFSET(sizeof(vertices[0].color)));
+    glVertexAttribPointer(vColor, 4, GL_UNSIGNED_BYTE
+        , GL_TRUE, sizeof(VertexData)
+        , BUFFER_OFFSET(0));
+
+    //shaders ---^
+*/
+
 static const GLchar* ReadShader(const char* filename)
 {
     FILE* infile = fopen(filename, "rb");

@@ -21,6 +21,7 @@
     <ClInclude Include="include\render0\render0.hpp">
       <Filter>include\render0</Filter>
     </ClInclude>
+    <ClInclude Include="include\render0\camera.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\render0.cpp">
@@ -32,5 +33,6 @@
     <ClCompile Include="src\testTriangle.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\camera.cpp" />
   </ItemGroup>
 </Project>
