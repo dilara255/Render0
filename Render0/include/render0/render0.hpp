@@ -7,6 +7,7 @@
 #include "logAPI.hpp"
 
 #include "camera.hpp"
+#include "input0.hpp"
 
 //#ifndef RENDER_GLOBALS
     
@@ -59,5 +60,6 @@
 
 GLuint LoadShaders(shaderInfo_t* shaders);
 int renderSimple(renderInfo_t renderInfo);
-int renderWithCamera(renderInfo_t renderInfo, CameraZ camera);
+int renderWithCamera( renderInfo_t *renderInfo, CameraZ camera
+                    , void (*controlTestCamera) (CameraZ* camera));
 void initShaderPrograms();

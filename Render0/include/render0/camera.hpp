@@ -38,10 +38,12 @@ public:
 
 	void translateWorldCoord(glm::vec3 translation);
 	void translateCameraCoord(glm::vec3 translation);
+	glm::vec3 CameraZ::getPosition();
 
 	void roll(radians angle);
 	void yaw(radians angle);
 	void pitch(radians angle);
+	glm::vec3 CameraZ::getView();
 
 	void lookAtToggle();
 	void lookAtTurnOn();
@@ -59,13 +61,15 @@ public:
 
 	radians getNearDist();
 	radians getFarDist();
-	void setNearDist(glm::float32 nearDist);
-	void setFarDist(glm::float32 farDist);
+	void changeNearDistBy(glm::float32 nearDistChange);
+	void changeFarDistBy(glm::float32 farDistChange);
 
 	radians getFovHor();
 	radians getFovVer();
 	void setFovHor(radians fovHor);
 	void setFovVer(radians fovVert);
+
+	void resetCamera();
 
 	glm::mat4 cameraProjection;
 
@@ -78,5 +82,6 @@ private:
 	void updatePerspectiveMatrix();
 
 	cameraState_t state;
+	cameraState_t initialState;
 };
 

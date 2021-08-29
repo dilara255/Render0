@@ -40,6 +40,9 @@ namespace rz {
 
         RZ_INFO("Shaders preparados");
 
+        RZ_TRACE("Vai iniciar input..");
+        iz::init(renderWindow.window);
+
         return 1;
     }
 
@@ -99,7 +102,8 @@ int renderSimple(renderInfo_t renderInfo) {
     return 1;
 }
 
-int renderWithCamera(renderInfo_t renderInfo, CameraZ camera) {
+int renderWithCamera( renderInfo_t *renderInfo, CameraZ camera
+                    , void (*controlTestCamera) (CameraZ *camera)) {
 
     RZ_INFO("Habilitando atributos vColor, vPosition e Matriz Projecao...");
 
@@ -111,21 +115,23 @@ int renderWithCamera(renderInfo_t renderInfo, CameraZ camera) {
     
     printf("\t\tLocalizacao uniform projecao: %i\n", projectionLocation);
 
-    glUniformMatrix4fv(projectionLocation, 1, false, &camera.cameraProjection[0][0]);
-
     RZ_INFO("Renderizar...");
 
-    while (!glfwWindowShouldClose(renderInfo.window))
+    while (!glfwWindowShouldClose(renderInfo->window))
     {
-        glClearBufferfv(GL_COLOR, 0, renderInfo.clearColor);
+        glUniformMatrix4fv(projectionLocation, 1, false, &camera.cameraProjection[0][0]);
 
-        glBindVertexArray(renderInfo.VAO);
+        glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
 
-        glDrawArrays(renderInfo.mode, 0, renderInfo.numVertices);
+        glBindVertexArray(renderInfo->VAO);
 
-        glfwSwapBuffers(renderInfo.window);
+        glDrawArrays(renderInfo->mode, 0, renderInfo->numVertices);
+
+        glfwSwapBuffers(renderInfo->window);
 
         glfwPollEvents();
+
+        controlTestCamera(&camera);
     }
 
     RZ_INFO("Chega de triangulo...");
