@@ -40,6 +40,32 @@ void CameraZ::translateCameraCoord(glm::vec3 translation) {
 	this->state.position += this->state.viewDirection * translation.z;
 	this->state.position += this->state.upDirection * translation.y;
 	this->state.position += this->state.sideDirection * translation.x;
+
+	//se pá vetores up e side tão ficando loco tb quando chega rodopiando
+	if (this->lookAtIsOn()) {
+		float distanceToLookAt = glm::length(  this->state.position 
+			                                 - this->state.lookatPosition);
+		if (fabs(distanceToLookAt) < MIN_NEAR) {
+			printf("\nMUITO PERTO! \t%f, %f, %f", this->state.position.x
+				, this->state.position.y
+				, this->state.position.z);
+			printf("\nView: \t%f, %f, %f", this->state.viewDirection.x
+				, this->state.viewDirection.y
+				, this->state.viewDirection.z);
+
+			if (this->perspectiveIsOn()) {
+				this->state.position = this->state.lookatPosition
+					                 + (2.f*this->state.viewDirection);
+			} 
+
+			printf("\nMais longe? \t%f, %f, %f", this->state.position.x
+				                               , this->state.position.y
+				                               , this->state.position.z);
+			printf("\nView: \t%f, %f, %f", this->state.viewDirection.x
+				                       , this->state.viewDirection.y
+				                       , this->state.viewDirection.z);
+		}
+	}
 }
 
 glm::vec3 CameraZ::getPosition() {

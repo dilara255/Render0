@@ -23,6 +23,7 @@
     </ClInclude>
     <ClInclude Include="include\render0\camera.hpp" />
     <ClInclude Include="include\input0.hpp" />
+    <ClInclude Include="include\render0\model0.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\render0.cpp">
@@ -36,5 +37,7 @@
     </ClCompile>
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\input0.cpp" />
+    <ClCompile Include="src\modelManager.cpp" />
+    <ClCompile Include="src\modelRenderTest.cpp" />
   </ItemGroup>
 </Project>

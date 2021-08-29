@@ -1,33 +1,73 @@
-#include "miscStdHeaders.h"
-
-#include "render0/render0.hpp"
 #include "render0/model0.hpp"
-#include "RZ_API/RZ_api.hpp"
-#include "logAPI.hpp"
+#include "render0/render0.hpp"
+#include "render0/camera.hpp"
 
-CameraZ getTestCamera();
-renderInfo_t setupTestTriangleToRender(int shader);
-void controlTestCamera(CameraZ* camera);
+#include "RZ_api.hpp"
 
-renderInfo_t testRenderInfo;
+CameraZ getTestCamera(float bBoxDiagonal);
+renderInfo_t setupRenderInfo(int shader, CameraZ* camera_ptr, mz::ModelZ* model_ptr);
+void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr);
 
-namespace rz {
+renderInfo_t renderInfo;
+glm::mat4 modelMatrix;
 
-    int testTriangle(void) {
-        return renderSimple(setupTestTriangleToRender(SIMPLE));
-    }
+int initModelRenderTest() {
 
-    int testTriangleWithCamera(void) {
-        RZ_TRACE("Desenhar triangulinho colorido de teste COM CAMERA...");
-        CameraZ camera = getTestCamera();
-        camera.updateCameraMatrix();
-        testRenderInfo = setupTestTriangleToRender(SIMPLE_CAMERA);
-        return renderWithCamera(&testRenderInfo, camera, controlTestCamera);
-    }
+	RZ_TRACE("Renderizar modelo lido, com camera");
+	
+	static mz::ModelZ testModel("models/Teste3DMax.max");
+    CameraZ camera = getTestCamera(testModel.getBoundingBoxDiagonal());
+    renderInfo = setupRenderInfo(SIMPLE_MVP, &camera, &testModel);
+    
+    float cx = testModel.getBoundingBoxCenter().x;
+    float cy = testModel.getBoundingBoxCenter().y;
+    float cz = testModel.getBoundingBoxCenter().z;
+    float cw = testModel.getBoundingBoxCenter().w;
+
+    modelMatrix = {
+        glm::vec4(1.f, 0  , 0  , -cx),
+        glm::vec4(0  , 1.f, 0  , -cy),
+        glm::vec4(0  , 0  , 1.f, -cz),
+        glm::vec4(0  , 0  , 0  , -cw),
+    };
+
+    return renderWithCameraAndModel(&renderInfo, camera, &modelMatrix, controlTest);
 }
 
-renderInfo_t setupTestTriangleToRender(int shader)
-{
+CameraZ getTestCamera(float bBoxDiagonal) {
+
+    RZ_TRACE("Inicializando camera...");
+
+    cameraState_t initialState;
+
+    initialState.lookAtActive = true;
+    initialState.perspectiveOn = true;
+
+    initialState.nearDist = -0.1f;
+    initialState.farDist = -100;
+    initialState.fovHor = glm::radians(60.f);
+    initialState.fovVert = glm::radians(60.f);
+    initialState.orthoDistance = bBoxDiagonal / 2.f;
+
+    float distanceToFitModel = tanf(initialState.fovVert / 2.f) * (bBoxDiagonal / 2.f);
+
+    initialState.position = glm::vec3(0.0f, 0.0f, distanceToFitModel);
+
+    initialState.lookatPosition = glm::vec3(0, 0, 0);
+    initialState.viewDirection = glm::vec3(0.0f, 0.0f, -1);
+    initialState.upDirection = glm::vec3(0, 1, 0);
+    initialState.sideDirection = glm::vec3(1, 0, 0);
+
+    CameraZ camera(initialState);
+
+    camera.updateCameraMatrix();
+
+    RZ_INFO("Camera iniciada!");
+
+    return camera;
+}
+
+renderInfo_t setupRenderInfo(int shader, CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
     GLuint  VAOs[NumVAOs];
     GLuint  Buffers[NumBuffers];
 
@@ -88,43 +128,15 @@ renderInfo_t setupTestTriangleToRender(int shader)
         VAOs[Triangles],
         NumVertices,
         renderWindow.window,
-        GL_TRIANGLE_STRIP
-        //GL_LINE_LOOP GL_POINTS
+        GL_TRIANGLE_STRIP, //GL_LINE_LOOP GL_POINTS
+        camera_ptr,
+        model_ptr
     };
 
     return renderInfo;
 }
 
-CameraZ getTestCamera() {
-    
-    RZ_TRACE("Inicializando camera...");
-
-    cameraState_t initialState;
-
-    initialState.lookAtActive = true;
-    initialState.perspectiveOn = true;
-
-    initialState.position = glm::vec3(0.0f,0.0f,2.f);
-
-    initialState.lookatPosition = glm::vec3(0, 0, 0);
-    initialState.viewDirection = glm::vec3(0.0f, 0.0f, -1);
-    initialState.upDirection = glm::vec3(0, 1, 0);
-    initialState.sideDirection = glm::vec3(1, 0, 0);
-
-    initialState.nearDist = -0.1f;
-    initialState.farDist = -100;
-    initialState.fovHor = glm::radians(60.f);
-    initialState.fovVert = glm::radians(60.f);
-    initialState.orthoDistance = fabs(sinf(initialState.fovHor/2)* initialState.farDist/2.f);
-
-    CameraZ camera(initialState);
-
-    RZ_INFO("Camera iniciada!");
-
-    return camera;
-}
-
-void controlTestCamera(CameraZ* camera) {
+void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
 
     static bool useCameraCoordinates = true;
 
@@ -134,7 +146,7 @@ void controlTestCamera(CameraZ* camera) {
     static bool blockReset = false;
 
     bool hasToUpdate = false;
-    
+
     glm::vec3 translationCameraCoordinates(0, 0, 0);
     float posStepSize = 0.025f;
     float fovStepSize = 0.025f;
@@ -164,82 +176,82 @@ void controlTestCamera(CameraZ* camera) {
         translationCameraCoordinates.z += posStepSize;
     }
 
-    hasToUpdate = (  (translationCameraCoordinates.x != 0) 
-                  || (translationCameraCoordinates.y != 0)
-                  || (translationCameraCoordinates.z != 0) );
+    hasToUpdate = ((translationCameraCoordinates.x != 0)
+        || (translationCameraCoordinates.y != 0)
+        || (translationCameraCoordinates.z != 0));
 
     if (keyboardInput.increaseFOVPressed) {
-        camera->setFovVer(camera->getFovVer() + fovStepSize);
-        camera->setFovHor(camera->getFovHor() + fovStepSize);
-        
+        camera_ptr->setFovVer(camera_ptr->getFovVer() + fovStepSize);
+        camera_ptr->setFovHor(camera_ptr->getFovHor() + fovStepSize);
+
         hasToUpdate = true;
     }
     if (keyboardInput.decreaseFOVPressed) {
-        camera->setFovVer(camera->getFovVer() - fovStepSize);
-        camera->setFovHor(camera->getFovHor() - fovStepSize);
+        camera_ptr->setFovVer(camera_ptr->getFovVer() - fovStepSize);
+        camera_ptr->setFovHor(camera_ptr->getFovHor() - fovStepSize);
 
         hasToUpdate = true;
     }
 
     if (keyboardInput.increaseFar) {
-        camera->changeFarDistBy(farStepSize);
+        camera_ptr->changeFarDistBy(farStepSize);
 
         hasToUpdate = true;
     }
     if (keyboardInput.decreaseFar) {
-        camera->changeFarDistBy(-farStepSize);
+        camera_ptr->changeFarDistBy(-farStepSize);
 
         hasToUpdate = true;
     }
 
     if (keyboardInput.increaseNear) {
-        camera->changeNearDistBy(nearStepSize);
+        camera_ptr->changeNearDistBy(nearStepSize);
 
         hasToUpdate = true;
     }
     if (keyboardInput.decreaseNear) {
-        camera->changeNearDistBy(-nearStepSize);
+        camera_ptr->changeNearDistBy(-nearStepSize);
 
         hasToUpdate = true;
     }
 
     if (keyboardInput.increaseR) {
-        testRenderInfo.clearColor[0] += colorStep;
-        if (testRenderInfo.clearColor[0] > 1)
-            testRenderInfo.clearColor[0] -= 1;
+        renderInfo_ptr->clearColor[0] += colorStep;
+        if (renderInfo_ptr->clearColor[0] > 1)
+            renderInfo_ptr->clearColor[0] -= 1;
     }
     if (keyboardInput.decreaseR) {
-        testRenderInfo.clearColor[0] -= colorStep;
-        if (testRenderInfo.clearColor[0] < 0)
-            testRenderInfo.clearColor[0] += 1;
+        renderInfo_ptr->clearColor[0] -= colorStep;
+        if (renderInfo_ptr->clearColor[0] < 0)
+            renderInfo_ptr->clearColor[0] += 1;
     }
 
     if (keyboardInput.increaseG) {
-        testRenderInfo.clearColor[1] += colorStep;
-        if (testRenderInfo.clearColor[1] > 1)
-            testRenderInfo.clearColor[1] -= 1;
+        renderInfo_ptr->clearColor[1] += colorStep;
+        if (renderInfo_ptr->clearColor[1] > 1)
+            renderInfo_ptr->clearColor[1] -= 1;
     }
     if (keyboardInput.decreaseG) {
-        testRenderInfo.clearColor[1] -= colorStep;
-        if (testRenderInfo.clearColor[1] < 0)
-            testRenderInfo.clearColor[1] += 1;
+        renderInfo_ptr->clearColor[1] -= colorStep;
+        if (renderInfo_ptr->clearColor[1] < 0)
+            renderInfo_ptr->clearColor[1] += 1;
     }
 
     if (keyboardInput.increaseB) {
-        testRenderInfo.clearColor[2] += colorStep;
-        if (testRenderInfo.clearColor[2] > 1)
-            testRenderInfo.clearColor[2] -= 1;
+        renderInfo_ptr->clearColor[2] += colorStep;
+        if (renderInfo_ptr->clearColor[2] > 1)
+            renderInfo_ptr->clearColor[2] -= 1;
     }
     if (keyboardInput.decreaseB) {
-        testRenderInfo.clearColor[2] -= colorStep;
-        if (testRenderInfo.clearColor[2] < 0)
-            testRenderInfo.clearColor[2] += 1;
+        renderInfo_ptr->clearColor[2] -= colorStep;
+        if (renderInfo_ptr->clearColor[2] < 0)
+            renderInfo_ptr->clearColor[2] += 1;
     }
-    
+
     if (keyboardInput.toggleMoveCameraOrWorldCoords) {
         if (!blockToogleUseCameraCoordinates) {
             useCameraCoordinates = !useCameraCoordinates;
-            
+
             blockToogleUseCameraCoordinates = true;
 
             if (useCameraCoordinates) RZ_TRACE("Usando Coordenadas de Camera");
@@ -250,12 +262,12 @@ void controlTestCamera(CameraZ* camera) {
 
     if (keyboardInput.toggleLookatPressed) {
         if (!blockToogleLookAt) {
-            camera->lookAtToggle();
-            
+            camera_ptr->lookAtToggle();
+
             blockToogleLookAt = true;
             hasToUpdate = true;
-            
-            bool lookatIsOn = camera->lookAtIsOn();
+
+            bool lookatIsOn = camera_ptr->lookAtIsOn();
             if (lookatIsOn) RZ_TRACE("Lookat Ativado");
             else RZ_TRACE("Lookat Desativado");
         }
@@ -264,21 +276,21 @@ void controlTestCamera(CameraZ* camera) {
 
     if (keyboardInput.toggleOrthoPerspectivePressed) {
         if (!blockTooglePerspective) {
-            camera->perspectiveToggle();
-            
+            camera_ptr->perspectiveToggle();
+
             blockTooglePerspective = true;
             hasToUpdate = true;
 
-            bool perspectiveIsOn = camera->perspectiveIsOn();
+            bool perspectiveIsOn = camera_ptr->perspectiveIsOn();
             if (perspectiveIsOn) RZ_TRACE("Proj. Perspectiva Ativada");
             else RZ_TRACE("Proj. Orthografica Ativado");
         }
-    } 
+    }
     else blockTooglePerspective = false;
 
     if (keyboardInput.resetViewPressed) {
         if (!blockReset) {
-            camera->resetCamera();
+            camera_ptr->resetCamera();
 
             blockReset = true;
             hasToUpdate = true;
@@ -291,11 +303,11 @@ void controlTestCamera(CameraZ* camera) {
     if (hasToUpdate) {
 
         if (useCameraCoordinates) {
-            camera->translateCameraCoord(translationCameraCoordinates);
+            camera_ptr->translateCameraCoord(translationCameraCoordinates);
         }
-        else camera->translateWorldCoord(translationCameraCoordinates);
+        else camera_ptr->translateWorldCoord(translationCameraCoordinates);
 
-        camera->updateCameraMatrix();
+        camera_ptr->updateCameraMatrix();
 
         /*
         printf("\tcamera position: \t%f, %f, %f\n", camera->getPosition().x
@@ -305,4 +317,5 @@ void controlTestCamera(CameraZ* camera) {
             , camera->getView().y, camera->getView().z, camera->getFovVer());
         */
     }
+
 }

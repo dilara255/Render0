@@ -16,6 +16,15 @@ void initShaderPrograms() {
         { GL_FRAGMENT_SHADER, "shaders/trianglesWithCamera.frag" };
     shaderPrograms[SIMPLE_CAMERA].shaderInfo[NOT_USING] =
         { GL_NONE, NULL };
+
+    shaderPrograms[SIMPLE_MVP].shadersID = SIMPLE_MVP;
+    shaderPrograms[SIMPLE_MVP].shaderInfo[VERT] =
+    { GL_VERTEX_SHADER, "shaders/simpleModelWithMVP.vert" };
+    shaderPrograms[SIMPLE_MVP].shaderInfo[FRAG] =
+    { GL_FRAGMENT_SHADER, "shaders/simpleModelWithMVP.frag" };
+    shaderPrograms[SIMPLE_MVP].shaderInfo[NOT_USING] =
+    { GL_NONE, NULL };
+  
 }
 
 /*

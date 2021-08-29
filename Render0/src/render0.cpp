@@ -1,5 +1,8 @@
 #include "render0/render0.hpp"
+#include "render0/model0.hpp"
 #include "RZ_API/RZ_api.hpp"
+
+void error_callback(int error, const char* description);
 
 namespace rz {
 
@@ -12,6 +15,10 @@ namespace rz {
             return -1;
         }
         RZ_INFO("GLFW Iniciado");
+
+        RZ_TRACE("Setar Callback de erro e tentar criar janela...");
+
+        glfwSetErrorCallback(error_callback);
 
         renderWindow.window = glfwCreateWindow(renderWindow.width, renderWindow.height
             , renderWindow.title, NULL, NULL);
@@ -40,7 +47,6 @@ namespace rz {
 
         RZ_INFO("Shaders preparados");
 
-        RZ_TRACE("Vai iniciar input..");
         iz::init(renderWindow.window);
 
         return 1;
@@ -139,4 +145,19 @@ int renderWithCamera( renderInfo_t *renderInfo, CameraZ camera
     rz::terminate();
 
     return 1;
+}
+
+
+int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4* modelMatrix
+    , void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr)) {
+    
+    
+
+    return 0;
+}
+
+void error_callback(int error, const char* description)
+{
+    RZ_ERROR(description);
+    printf("\n\t( error id: %i )", error);
 }

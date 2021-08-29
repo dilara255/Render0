@@ -1,0 +1,12 @@
+Object name = <obj_name>
+# triangles = <num_tri>
+Material count = <material_count>
+ambient color <r_a> <g_a> <b_a>
+diffuse color <r_d> <g_d> <b_d>
+specular color <r_s> <g_s> <b_s>
+material shine <shine_coeff>
+-- 3*[pos(x,y,z) normal(x,y,z) color_index] face_normal(x,y,z)
+v0 <x> <y> <z> <Nx> <Ny> <Nz> <material_index>
+v1 <x> <y> <z> <Nx> <Ny> <Nz> <material_index>
+v2 <x> <y> <z> <Nx> <Ny> <Nz> <material_index>
+face normal <FNx> <FNy> <FNz>

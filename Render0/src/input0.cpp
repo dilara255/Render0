@@ -15,6 +15,9 @@ void processKeyBindings(bool *input, int keyBound, int key, int action) {
 namespace iz {
 
 	int init(GLFWwindow* window) {
+
+		RZ_TRACE("Vai iniciar input..");
+
 		glfwSetKeyCallback(window, key_callback);
 		RZ_INFO("Setou callback input para janela");
 
