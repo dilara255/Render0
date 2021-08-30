@@ -1,0 +1,12 @@
+Object name = SAP
+# triangles = 1
+Material count = 1
+ambient color 0.5 0.5 0.5
+diffuse color 0.75 0.75 0.75
+specular color 1.000 1.000 1.000
+material shine 0.250
+-- 3*[pos(x,y,z) normal(x,y,z) color_index] face_normal(x,y,z)
+v0 -0.90 -0.90 0 0.0 0.0 1.0 0
+v1  0.90 -0.90 0 0.0 0.0 1.0 0
+v2 -0.90  0.90 0 0.0 0.0 1.0 0
+face normal 0.0 0.0 1.0

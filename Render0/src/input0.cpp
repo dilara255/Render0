@@ -28,7 +28,7 @@ namespace iz {
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 	struct keyBinding { bool* input; int keyBound; };
-	const int keysToBind = 22;
+	const int keysToBind = 32;
 	keyBinding bindings[keysToBind] = {
 
 		& keyboardInput.leftPressed		, GLFW_KEY_A,
@@ -37,6 +37,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		& keyboardInput.downPressed	    , GLFW_KEY_S,
 		& keyboardInput.forwardPressed	, GLFW_KEY_UP,
 		& keyboardInput.backwardPressed	, GLFW_KEY_DOWN,
+
+		& keyboardInput.pitchDownPressed    , GLFW_KEY_U,
+		& keyboardInput.pitchUpPressed    , GLFW_KEY_I,
+		& keyboardInput.yawLeftPressed      , GLFW_KEY_H,
+		& keyboardInput.yawRightPressed      , GLFW_KEY_J,
+		& keyboardInput.rollCWPressed     , GLFW_KEY_L,
+		& keyboardInput.rollCCWPressed     , GLFW_KEY_K,
 
 		& keyboardInput.increaseFOVPressed	, GLFW_KEY_PAGE_UP,
 		& keyboardInput.decreaseFOVPressed	, GLFW_KEY_PAGE_DOWN,
@@ -47,7 +54,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		& keyboardInput.decreaseFar	    , GLFW_KEY_KP_SUBTRACT,
 
 		& keyboardInput.toggleMoveCameraOrWorldCoords	, GLFW_KEY_C,
-		& keyboardInput.toggleLookatPressed	            , GLFW_KEY_L,
+		& keyboardInput.toggleLookatPressed	            , GLFW_KEY_T,
 		& keyboardInput.toggleOrthoPerspectivePressed	, GLFW_KEY_P,
 		& keyboardInput.resetViewPressed	            , GLFW_KEY_R,
 
@@ -56,7 +63,13 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		& keyboardInput.increaseB	, GLFW_KEY_KP_9,
 		& keyboardInput.decreaseR	, GLFW_KEY_KP_4,
 		& keyboardInput.decreaseG	, GLFW_KEY_KP_5,
-		& keyboardInput.decreaseB	, GLFW_KEY_KP_6		
+		& keyboardInput.decreaseB	, GLFW_KEY_KP_6,
+
+		& keyboardInput.cycleDrawModePressed , GLFW_KEY_M,
+		& keyboardInput.toggleCullingPressed , GLFW_KEY_X,
+		& keyboardInput.toggleCCWtoCWPressed , GLFW_KEY_PERIOD,
+
+		& keyboardInput.closeWindowPressed , GLFW_KEY_ESCAPE
 	};
 
 	for (int i = 0; i < keysToBind; i++) {

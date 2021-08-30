@@ -8,6 +8,10 @@ namespace rz {
 
     int init() {
 
+        //TESTE
+        //mz::ModelZ model("models/Teste3DMax.max");//TESTE
+        //TESTE
+
         RZ_TRACE("Criando janela...");
 
         if (!glfwInit()) {
@@ -148,10 +152,63 @@ int renderWithCamera( renderInfo_t *renderInfo, CameraZ camera
 }
 
 
-int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4* modelMatrix
-    , void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr)) {
+int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4 modelMatrix
+    , int shader, void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr)) {
     
+    RZ_TRACE("Preparando para renderizar. Carregar shaders...");
+
+    shaderPrograms[shader].shaderProgramId = LoadShaders(shaderPrograms[shader].shaderInfo);
+    RZ_TRACE("Ligar programa...");
+    glUseProgram(shaderPrograms[shader].shaderProgramId);
+
+    glm::mat4 modelMatrixRender = modelMatrix;
+
     
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+    float clearToThisDepth = 1.0f;
+
+    while (!glfwWindowShouldClose(renderInfo->window)) {
+
+        if (renderInfo->shouldCull) {
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+            glFrontFace(renderInfo->faceDirectionForCulling);
+        }
+        else glDisable(GL_CULL_FACE);
+        
+        glUniformMatrix4fv(vPV_matrix, 1, false, &camera.cameraProjection[0][0]);
+        glUniformMatrix4fv(vModel_matrix, 1, false, &modelMatrix[0][0]);
+        
+        glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
+        glClearBufferfv(GL_DEPTH, 0, &clearToThisDepth);
+        
+        glBindVertexArray(renderInfo->VAO);
+
+        glDrawArrays(renderInfo->modes[renderInfo->mode], 0, renderInfo->numVertices);
+
+        glfwSwapBuffers(renderInfo->window);
+
+        glfwPollEvents();
+
+        controlTest(&camera, renderInfo);
+    }
+
+    RZ_TRACE("Checando se tivemos algum erro...\n");
+
+    int errors;
+    int errorCount = 0;
+
+    while( (errors = glGetError()) != GL_NO_ERROR){
+        errorCount++;
+        printf("\t-> ERRO OPENGL: %i\n", errors);
+    }
+
+    if (errorCount > 0) RZ_WARN("\n\nOuveram erros de OpenGL durante a execucao, veja codigos acima!\n\n");
+    else RZ_INFO("\nNao houveram erros de OpenGL durante a execucao : )\n");
+
+    rz::terminate();
+    RZ_INFO("Janela Fechada");
 
     return 0;
 }

@@ -2,6 +2,8 @@
 
 #include "miscStdHeaders.h"
 
+#include "logAPI.hpp"
+
 #define DEFAULT_WIDTH (640)
 #define DEFAULT_HEIGHT (480)
 

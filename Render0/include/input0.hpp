@@ -13,22 +13,39 @@ namespace iz {
 		bool downPressed = false;
 		bool forwardPressed = false;
 		bool backwardPressed = false;
+
 		bool toggleOrthoPerspectivePressed = false;
 		bool toggleLookatPressed = false;
 		bool toggleMoveCameraOrWorldCoords = false;
+
 		bool resetViewPressed = false;
+
 		bool increaseFOVPressed = false;
 		bool decreaseFOVPressed = false;
 		bool increaseNear = false;
 		bool decreaseNear = false;
 		bool increaseFar = false;
 		bool decreaseFar = false;
+
 		bool increaseR = false;
 		bool increaseG = false;
 		bool increaseB = false;
 		bool decreaseR = false;
 		bool decreaseG = false;
 		bool decreaseB = false;
+
+		bool cycleDrawModePressed = false;
+		bool toggleCullingPressed = false;
+		bool toggleCCWtoCWPressed = false;
+
+		bool closeWindowPressed = false;
+
+		bool pitchDownPressed = false;
+		bool pitchUpPressed = false;
+		bool yawLeftPressed = false;
+		bool yawRightPressed = false;
+		bool rollCWPressed = false;
+		bool rollCCWPressed = false;
 	} inputGiven_t;
 }
 

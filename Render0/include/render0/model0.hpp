@@ -57,14 +57,24 @@ namespace mz {
 	public:
 
 		ModelZ(model_t model);
-		ModelZ(char* model3DMaxFile);
+		ModelZ(const char* model3DMaxFile);
 
 		float getBoundingBoxDiagonal();
 		glm::vec4 getBoundingBoxCenter();
+		int ModelZ::getNumberTriangles();
+		int ModelZ::getNumberMaterials();
+
+		glm::vec4* posBuffer;
+		glm::vec4* normBuffer;
+		glm::vec4* ambientBuffer;
+		glm::vec4* diffuseBuffer;
+		glm::vec4* specularBuffer;
+		float* spcShineCoefBuffer;
 
 	private:
 
 		void printModel();
+		void printBuffers();
 
 		model_t model;
 	};

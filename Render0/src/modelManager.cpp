@@ -8,7 +8,7 @@ ModelZ::ModelZ(model_t model) {
 	this->model = model;
 }
 
-ModelZ::ModelZ(char* model3DMaxFile) {
+ModelZ::ModelZ(const char* model3DMaxFile) {
 	
 	RZ_TRACE("\nLendo arquivo de modelo em formato .MAX");
 	printf("\t( de %s )\n", model3DMaxFile);
@@ -128,10 +128,67 @@ ModelZ::ModelZ(char* model3DMaxFile) {
 
 	RZ_INFO("\nModelo lido!");
 
+	RZ_TRACE("Determinando boundingBoxes e preparando buffers");
 	this->model.bBox = calculateBoundingBox(this->model);
 
 	//TESTE
-	this->printModel();
+	//this->printModel(); //TESTE
+	//TESTE
+
+	int numberVertices = this->model.numberTriangles * 3;
+
+	this->posBuffer              = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
+	this->normBuffer             = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
+	this->ambientBuffer          = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
+	this->diffuseBuffer          = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
+	this->specularBuffer         = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
+	this->spcShineCoefBuffer     = (float*)malloc(numberVertices * sizeof(float));
+
+	RZ_TRACE("Espaco alocado, copiar dados...");
+
+	for (int i = 0; i < this->model.numberTriangles; i++) {
+		int index = 0;
+		int matIndex = 0;
+		for (int j = 0; j < 3; j++) {
+			index = (3 * i) + j;
+
+			this->posBuffer[index].x = this->model.triangles[i].vertexes[j].position.x;
+			this->posBuffer[index].y = this->model.triangles[i].vertexes[j].position.y;
+			this->posBuffer[index].z = this->model.triangles[i].vertexes[j].position.z;
+			this->posBuffer[index].w = this->model.triangles[i].vertexes[j].position.w;
+
+			this->normBuffer[index].x = this->model.triangles[i].vertexes[j].normal.x;
+			this->normBuffer[index].y = this->model.triangles[i].vertexes[j].normal.y;
+			this->normBuffer[index].z = this->model.triangles[i].vertexes[j].normal.z;
+			this->normBuffer[index].w = this->model.triangles[i].vertexes[j].normal.w;
+			
+			matIndex = this->model.triangles[i].vertexes[j].materialIndex;
+
+			this->ambientBuffer[index].r = this->model.materials[matIndex].ambient[0];
+			this->ambientBuffer[index].g = this->model.materials[matIndex].ambient[1];
+			this->ambientBuffer[index].b = this->model.materials[matIndex].ambient[2];
+			this->ambientBuffer[index].w = this->model.materials[matIndex].ambient[3];
+
+			this->diffuseBuffer[index].r = this->model.materials[matIndex].diffuse[0];
+			this->diffuseBuffer[index].g = this->model.materials[matIndex].diffuse[1];
+			this->diffuseBuffer[index].b = this->model.materials[matIndex].diffuse[2];
+			this->diffuseBuffer[index].w = this->model.materials[matIndex].diffuse[3];
+
+			this->specularBuffer[index].r = this->model.materials[matIndex].specular[0];
+			this->specularBuffer[index].g = this->model.materials[matIndex].specular[1];
+			this->specularBuffer[index].b = this->model.materials[matIndex].specular[2];
+			this->specularBuffer[index].w = this->model.materials[matIndex].specular[3];
+
+			this->spcShineCoefBuffer[index] = this->model.materials[matIndex].specShineCoef;
+		}
+	}
+
+	//TESTE
+	//this->printBuffers(); //TESTE
+	//TESTE
+
+	RZ_INFO("Buffers prontos!");
+
 }
 
 float ModelZ::getBoundingBoxDiagonal() {
@@ -142,10 +199,18 @@ glm::vec4 ModelZ::getBoundingBoxCenter() {
 	return this->model.bBox.center;
 }
 
+int ModelZ::getNumberTriangles() {
+	return this->model.numberTriangles;
+}
+
+int ModelZ::getNumberMaterials() {
+	return this->model.numberMaterials;
+}
+
 void ModelZ::printModel() {
 	RZ_WARN("\n\nPrintando modelo! Vai tocando enter pra ir passando (pode demorar)");
 
-	printf("\nPrintinf Model:\nMaterials: %i\tTriangles: %i"
+	printf("\n\nMaterials: %i\tTriangles: %i"
 		  , this->model.numberMaterials, this->model.numberTriangles);
 	
 	printf("\n\nMaterial Info:");
@@ -207,6 +272,56 @@ void ModelZ::printModel() {
 
 	getchar();
 
+}
+
+void ModelZ::printBuffers() {
+	
+	RZ_WARN("\n\nPrintando buffers! Vai tocando enter pra ir passando (pode demorar)");
+
+	printf("\n\n\tVertexes: %i, with 6 buffers each", this->model.numberTriangles*3);
+	getchar();
+
+	int index = 0;
+	for (int i = 0; i < this->model.numberTriangles; i++) {
+		for (int j = 0; j < 3; j++) {
+			index = (3 * i) + j;
+			
+			printf("\n\nTriangulo %i, Vertice %i", i, j);
+
+			printf("\n\tPos: \t%f, %f, %f, %f", this->posBuffer[index].x,
+				                                this->posBuffer[index].y,
+				                                this->posBuffer[index].z,
+				                                this->posBuffer[index].w);
+
+			printf("\n\tNorm: \t%f, %f, %f, %f", this->normBuffer[index].x,
+												 this->normBuffer[index].y,
+												 this->normBuffer[index].z,
+												 this->normBuffer[index].w);
+
+			printf("\n\tAmbient: \t%f, %f, %f, %f", this->ambientBuffer[index].x,
+													this->ambientBuffer[index].y,
+													this->ambientBuffer[index].z,
+													this->ambientBuffer[index].w);
+
+			printf("\n\tDiffuse: \t%f, %f, %f, %f", this->diffuseBuffer[index].x,
+													this->diffuseBuffer[index].y,
+													this->diffuseBuffer[index].z,
+													this->diffuseBuffer[index].w);
+
+			printf("\n\tSpecular: \t%f, %f, %f, %f", this->specularBuffer[index].x,
+  													 this->specularBuffer[index].y,
+													 this->specularBuffer[index].z,
+													 this->specularBuffer[index].w);
+			
+			printf("\n\tSpecular Shine Coeficient: %f", this->spcShineCoefBuffer[index]);
+			
+			getchar();
+		}
+	}
+
+	RZ_WARN("\n\nPrintados os buffers! Enter pra continuar...");
+
+	getchar();
 }
 
 boundingBox_t calculateBoundingBox(model_t model) {

@@ -14,14 +14,19 @@
 #define NUMBER_SHADERS 3
 
 enum VAO_IDs { Triangles, NumVAOs };
+
 enum Buffer_IDs { ArrayBuffer, NumBuffers };
-enum BufferWithModels_IDs { PosBuffer, NormBuffer, AmbientBuffer
-                          , DiffuseBuffer, SpecularBuffer, SpcCoefBuffer
-                          , NumBuffersWithModels };
+enum BufferWithModels_IDs { PosBuffer, DiffuseBuffer, NormBuffer
+                          , AmbientBuffer, SpecularBuffer
+                          , SpcCoefBuffer, NumBuffersWithModels };
+
 enum Shader_Types { VERT, FRAG, NOT_USING };
 enum Shaders { SIMPLE, SIMPLE_CAMERA, SIMPLE_MVP };
+
 enum Attrib_IDs { vPosition = 0, vColor = 1 , vNormal = 2, vAmbient = 3
                 , vSpecular = 4, vSpcCoef = 5};
+
+enum Uniform_IDs {vPV_matrix = 0, vModel_matrix = 1};
 
 typedef struct windowParams_st {
     GLFWwindow* window;
@@ -35,15 +40,29 @@ typedef struct renderInfo_st {
     GLuint VAO;
     GLuint numVertices;
     GLFWwindow* window;
-    GLenum mode;
+    int mode;
     CameraZ* cameraState_ptr;
     mz::ModelZ* model_ptr = (mz::ModelZ * )NULL;
+    int modes[3] = { GL_TRIANGLES , GL_LINE_LOOP , GL_POINTS };
+    int faceDirectionForCulling = GL_CCW; //GL_CW
+    bool shouldCull = false;
 } renderInfo_t;
 
 typedef struct vertexDataCP_st {
     GLubyte color[4];
     GLfloat position[4];
 } vertexDataCP_t;
+
+typedef struct vertexDataPMM_st {
+    GLubyte ambientColor[4];
+    GLubyte diffuseColor[4];
+    GLubyte specularColor[4];
+
+    GLfloat position[4];
+    GLfloat normal[4];
+
+    GLfloat specShineCoef;
+} vertexDataPMM_t;
 
 typedef struct {
     GLenum       type;
@@ -64,6 +83,6 @@ GLuint LoadShaders(shaderInfo_t* shaders);
 int renderSimple(renderInfo_t renderInfo);
 int renderWithCamera( renderInfo_t *renderInfo, CameraZ camera
                     , void (*controlTestCamera) (CameraZ* camera));
-int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4* modelMatrix
-                    , void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr));
+int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4 modelMatrix
+    , int shader, void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr));
 void initShaderPrograms();

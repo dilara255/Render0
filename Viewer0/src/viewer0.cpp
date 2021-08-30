@@ -1,42 +1,24 @@
 #include "RZ_api.hpp"
 #include "logAPI.hpp"
 
-void loop1();
+void legacyTestLoop();
 
 int main(void){
 
 	VZ_TRACE("\nIniciando Render...");
 
 	if (!rz::init()) VZ_CRITICAL("\nRenderizador nao iniciou...");
-	/*
-	//Loop until the user closes the window
-	loop1();
+	
+	//rz::testTriangleWithCamera();
+	rz::modelMaterialRenderTest("models/2sap.max");
 
-	VZ_TRACE("Readquirir contexto...");
-
-	if (!rz::init()) VZ_CRITICAL("\nContexto nao voltou!");
-
-	VZ_INFO("Contexto Readquirido...");
-
-	//Loop until the user closes the window//
-	rz::testTriangle();
-	VZ_INFO("\nJanela fechada...");
-
-	VZ_TRACE("Readquirir contexto...");
-
-	if (!rz::init()) VZ_CRITICAL("\nContexto nao voltou!");
-	*/
-	/* Loop until the user closes the window */
-	rz::testTriangleWithCamera();
-	VZ_INFO("\nJanela fechada...");
-
-	VZ_TRACE("\nEnter para fechar...");
-	getc(stdin);
+	VZ_TRACE("\nEnter para sair...");
+	getchar();
 	
 	return 1;
 }
 
-void loop1() {
+void legacyTestLoop() {
 	bool keepGoing = true;
 	while (keepGoing) {
 		keepGoing = rz::renderTestLegacy();

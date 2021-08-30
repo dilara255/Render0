@@ -46,7 +46,9 @@ void CameraZ::translateCameraCoord(glm::vec3 translation) {
 		float distanceToLookAt = glm::length(  this->state.position 
 			                                 - this->state.lookatPosition);
 		if (fabs(distanceToLookAt) < MIN_NEAR) {
-			printf("\nMUITO PERTO! \t%f, %f, %f", this->state.position.x
+
+			RZ_WARN("MUITO PERTO!");
+			printf("\nPosition\t%f, %f, %f", this->state.position.x
 				, this->state.position.y
 				, this->state.position.z);
 			printf("\nView: \t%f, %f, %f", this->state.viewDirection.x
@@ -64,6 +66,7 @@ void CameraZ::translateCameraCoord(glm::vec3 translation) {
 			printf("\nView: \t%f, %f, %f", this->state.viewDirection.x
 				                       , this->state.viewDirection.y
 				                       , this->state.viewDirection.z);
+			RZ_WARN("Tentou se recuperar, mas isso tá em teste ainda : /");
 		}
 	}
 }
@@ -95,11 +98,11 @@ void CameraZ::rotate(radians angle, glm::vec3* directionFrom, glm::vec3* directi
 	glm::float32 sineAngle = glm::sin(angle);
 	glm::float32 cosineAngle = glm::cos(angle);
 
-	*directionFrom = cosineAngle * (*directionFrom)
-				   + sineAngle * (*directionTo);
+	*directionFrom = glm::normalize(  cosineAngle * (*directionFrom)
+				                    + sineAngle * (*directionTo) );
 
-	*directionTo = (-sineAngle) * tempDirectionFrom;
-				 + cosineAngle * (*directionTo);	
+	*directionTo = glm::normalize( (-sineAngle) * tempDirectionFrom
+				                   + cosineAngle * (*directionTo) );	
 }
 
 void CameraZ::lookAtToggle() {
