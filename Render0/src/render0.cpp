@@ -3,6 +3,7 @@
 #include "RZ_API/RZ_api.hpp"
 
 void error_callback(int error, const char* description);
+void checkOGlErrors();
 
 namespace rz {
 
@@ -163,12 +164,26 @@ int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4
 
     glm::mat4 modelMatrixRender = modelMatrix;
 
-    
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
     float clearToThisDepth = 1.0f;
 
+    GLint vColorUniformLocation = glGetUniformLocation(shaderPrograms[shader].shaderProgramId
+        , "vColorUniform");
+
+    GLint vPV_matrixUniformLocation = glGetUniformLocation(shaderPrograms[shader].shaderProgramId
+        , "vPV_matrix");
+
+    GLint vModel_matrixUniformLocation = glGetUniformLocation(shaderPrograms[shader].shaderProgramId
+        , "vModel_matrix");
+
+    checkOGlErrors();
+
     while (!glfwWindowShouldClose(renderInfo->window)) {
+       
+        glUniform4fv(vColorUniformLocation, 1, &renderInfo->colorForUniform.r);
+        glUniformMatrix4fv(vPV_matrixUniformLocation, 1, false, &camera.cameraProjection[0][0]);
+        glUniformMatrix4fv(vModel_matrixUniformLocation, 1, false, &modelMatrix[0][0]);
 
         if (renderInfo->shouldCull) {
             glEnable(GL_CULL_FACE);
@@ -176,10 +191,7 @@ int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4
             glFrontFace(renderInfo->faceDirectionForCulling);
         }
         else glDisable(GL_CULL_FACE);
-        
-        glUniformMatrix4fv(vPV_matrix, 1, false, &camera.cameraProjection[0][0]);
-        glUniformMatrix4fv(vModel_matrix, 1, false, &modelMatrix[0][0]);
-        
+
         glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
         glClearBufferfv(GL_DEPTH, 0, &clearToThisDepth);
         
@@ -194,18 +206,7 @@ int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4
         controlTest(&camera, renderInfo);
     }
 
-    RZ_TRACE("Checando se tivemos algum erro...\n");
-
-    int errors;
-    int errorCount = 0;
-
-    while( (errors = glGetError()) != GL_NO_ERROR){
-        errorCount++;
-        printf("\t-> ERRO OPENGL: %i\n", errors);
-    }
-
-    if (errorCount > 0) RZ_WARN("\n\nOuveram erros de OpenGL durante a execucao, veja codigos acima!\n\n");
-    else RZ_INFO("\nNao houveram erros de OpenGL durante a execucao : )\n");
+    checkOGlErrors();
 
     rz::terminate();
     RZ_INFO("Janela Fechada");
@@ -217,4 +218,19 @@ void error_callback(int error, const char* description)
 {
     RZ_ERROR(description);
     printf("\n\t( error id: %i )", error);
+}
+
+void checkOGlErrors() {
+    RZ_WARN("Checando se tivemos algum erro de OpenGL ateh aqui...\n");
+
+    int errors;
+    int errorCount = 0;
+
+    while ((errors = glGetError()) != GL_NO_ERROR) {
+        errorCount++;
+        printf("\t-> ERRO OPENGL: %i\n", errors);
+    }
+
+    if (errorCount > 0) RZ_ERROR("\n\nOuveram erros de OpenGL desde a ultima checagem, veja codigos acima!\n\n");
+    else RZ_INFO("\nNao houveram erros de OpenGL desde a ultima checagem : )\n");
 }

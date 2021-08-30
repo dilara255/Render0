@@ -9,11 +9,12 @@ layout( location = 5 ) in vec4 vSpcCoef;
 
 uniform mat4 vPV_matrix;
 uniform mat4 vModel_matrix;
+uniform vec4 vColorUniform;
 
 out vec4 fColor;
 
 void main()
 {
     gl_Position = vPV_matrix * vModel_matrix * vPosition;
-    fColor = vColor;
+    fColor = vColorUniform;
 }

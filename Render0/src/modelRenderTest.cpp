@@ -330,36 +330,66 @@ void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
     }
 
     if (keyboardInput.increaseR) {
+        renderInfo_ptr->colorForUniform.r += colorStep;
+        if (renderInfo_ptr->colorForUniform.r > 1)
+            renderInfo_ptr->colorForUniform.r -= 1;
+        /*
         renderInfo_ptr->clearColor[0] += colorStep;
         if (renderInfo_ptr->clearColor[0] > 1)
             renderInfo_ptr->clearColor[0] -= 1;
+        */
     }
     if (keyboardInput.decreaseR) {
+        renderInfo_ptr->colorForUniform.r -= colorStep;
+        if (renderInfo_ptr->colorForUniform.r < 0)
+            renderInfo_ptr->colorForUniform.r += 1;
+        /*
         renderInfo_ptr->clearColor[0] -= colorStep;
         if (renderInfo_ptr->clearColor[0] < 0)
             renderInfo_ptr->clearColor[0] += 1;
+        */
     }
 
     if (keyboardInput.increaseG) {
+        renderInfo_ptr->colorForUniform.g += colorStep;
+        if (renderInfo_ptr->colorForUniform.g > 1)
+            renderInfo_ptr->colorForUniform.g -= 1;
+        /* 
         renderInfo_ptr->clearColor[1] += colorStep;
         if (renderInfo_ptr->clearColor[1] > 1)
             renderInfo_ptr->clearColor[1] -= 1;
+        */
     }
     if (keyboardInput.decreaseG) {
+        renderInfo_ptr->colorForUniform.g -= colorStep;
+        if (renderInfo_ptr->colorForUniform.g < 0)
+            renderInfo_ptr->colorForUniform.g += 1;
+        /*
         renderInfo_ptr->clearColor[1] -= colorStep;
         if (renderInfo_ptr->clearColor[1] < 0)
             renderInfo_ptr->clearColor[1] += 1;
+        */
     }
 
     if (keyboardInput.increaseB) {
+        renderInfo_ptr->colorForUniform.b += colorStep;
+        if (renderInfo_ptr->colorForUniform.b > 1)
+            renderInfo_ptr->colorForUniform.b -= 1;
+        /*
         renderInfo_ptr->clearColor[2] += colorStep;
         if (renderInfo_ptr->clearColor[2] > 1)
             renderInfo_ptr->clearColor[2] -= 1;
+        */
     }
     if (keyboardInput.decreaseB) {
+        renderInfo_ptr->colorForUniform.b -= colorStep;
+        if (renderInfo_ptr->colorForUniform.b < 0)
+            renderInfo_ptr->colorForUniform.b += 1;
+        /*
         renderInfo_ptr->clearColor[2] -= colorStep;
         if (renderInfo_ptr->clearColor[2] < 0)
             renderInfo_ptr->clearColor[2] += 1;
+        */
     }
 
     if (keyboardInput.cycleDrawModePressed) {

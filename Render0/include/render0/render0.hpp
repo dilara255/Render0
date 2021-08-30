@@ -26,7 +26,7 @@ enum Shaders { SIMPLE, SIMPLE_CAMERA, SIMPLE_MVP };
 enum Attrib_IDs { vPosition = 0, vColor = 1 , vNormal = 2, vAmbient = 3
                 , vSpecular = 4, vSpcCoef = 5};
 
-enum Uniform_IDs {vPV_matrix = 0, vModel_matrix = 1};
+enum Uniform_IDs {vPV_matrix = 0, vModel_matrix = 1, vColorUniform = 0};
 
 typedef struct windowParams_st {
     GLFWwindow* window;
@@ -46,6 +46,7 @@ typedef struct renderInfo_st {
     int modes[3] = { GL_TRIANGLES , GL_LINE_LOOP , GL_POINTS };
     int faceDirectionForCulling = GL_CCW; //GL_CW
     bool shouldCull = false;
+    glm::vec4 colorForUniform = glm::vec4(0.55f, 0.1f, 0.85f, 1.f);
 } renderInfo_t;
 
 typedef struct vertexDataCP_st {
