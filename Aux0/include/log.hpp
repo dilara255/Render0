@@ -1,5 +1,7 @@
 #pragma once
 
+//Declaração funções log. Usa Spdlog. Exposto via macros em logAPI.hpp
+
 #include "miscStdHeaders.h"
 
 #include "core.hpp"

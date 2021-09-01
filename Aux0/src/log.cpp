@@ -1,3 +1,9 @@
+/*
+Loggers.Usa Spdlog.Exposto via macros em logAPI.hpp
+Por hora criando dois loggers, um pro renderer (dll),
+outro pro viewer (aplicação)
+*/
+
 #include "miscStdHeaders.h"
 #include "log.hpp"
 #include "logAPI.hpp"

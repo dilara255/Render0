@@ -1,15 +1,17 @@
+//Declara estrutura de estado e classe de câmera. 
+
 #pragma once
 
-#include "miscStdHeaders.h"
+#include "RZ_api.hpp"
 
 #include "logAPI.hpp"
+
 
 #define DEFAULT_WIDTH (640)
 #define DEFAULT_HEIGHT (480)
 
 inline glm::float32 screenRatio;
 
-//supposes normalized view, up and side directions, and keeps them that way
 typedef struct cameraState_st {
 	bool lookAtActive;
 	bool perspectiveOn;
@@ -37,6 +39,10 @@ class CameraZ {
 public:
 
 	CameraZ(cameraState_t initialState);
+
+	static CameraZ getCameraCenteredOnModel(mz::ModelZ* model_ptr, mz::boundingBox_t bBox, 
+		                                    bool lookAt, bool perspective, 
+		                                    float fov, float nearDist, float farDist);
 
 	void translateWorldCoord(glm::vec3 translation);
 	void translateCameraCoord(glm::vec3 translation);

@@ -1,194 +1,38 @@
+//Para testar renderização com camera e modelo.
+//Ideia é passar isso pro viewer, reorganizando pra depender só do RZ_api
+
 #include "render0/model0.hpp"
 #include "render0/render0.hpp"
 #include "render0/camera.hpp"
 
 #include "RZ_api.hpp"
 
-glm::mat4 getCenteringModelMatrix(mz::ModelZ modelToCenter);
-CameraZ getTestCamera(mz::ModelZ* model_ptr);
-renderInfo_t setupRenderInfo(CameraZ* camera_ptr, mz::ModelZ* model_ptr);
+//esse é o estado vai ficar sendo atualizado e lido pra renderizar - encapsular isso
+renderInfo_t renderInfo; 
+
 void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr);
 
-renderInfo_t renderInfo;
-
 int rz::modelMaterialRenderTest(const char* modelFile) {
+    
+    //cria recursos necessarios pra renderizar um modelo com controle de camera e manda rodar
 
 	RZ_TRACE("Renderizar modelo lido, com camera e materiais");
 	
 	static mz::ModelZ testModel(modelFile);
-    CameraZ camera = getTestCamera(&testModel);
-    renderInfo = setupRenderInfo(&camera, &testModel);
-    static glm::mat4 modelMatrixMMTest = getCenteringModelMatrix(testModel);
+    CameraZ cam = CameraZ::getCameraCenteredOnModel(&testModel, testModel.getCopyBoundingBox(),
+        true, true, 60.f, -0.1f, -5000);
+        
+    renderInfo = setupRenderInfoCameraModelSimple(&cam, &testModel);
+    static glm::mat4 modelMatrixMMTest = glm::mat4(1.0f); //centrando pela camera
     
-    return renderWithCameraAndModel(&renderInfo, camera, modelMatrixMMTest, SIMPLE_MVP, controlTest);
+    return renderWithCameraAndModel(&renderInfo, cam, modelMatrixMMTest, SIMPLE_MVP, controlTest);
 }
 
-
-glm::mat4 getCenteringModelMatrix(mz::ModelZ modelToCenter) {
-    //RETORNANDO IDENTIDADE PQ TO CENTRANDO PELA CAMERA
-
-    /*
-    float cx = modelToCenter.getBoundingBoxCenter().x;
-    float cy = modelToCenter.getBoundingBoxCenter().y;
-    float cz = modelToCenter.getBoundingBoxCenter().z;
-    float cw = modelToCenter.getBoundingBoxCenter().w;
-
-    printf("\n\nCenter: %f, %f, %f, %f\n\n", cx,cy,cz,cw);
-    */
-
-    glm::mat4 modelMatrix = {
-        glm::vec4( 1.f, 0  , 0  , 0   ),
-        glm::vec4( 0  , 1.f, 0  , 0   ),
-        glm::vec4( 0  , 0  , 1.f, 0   ),
-        glm::vec4( 0  , 0  , 0  , 1.f ),
-    };
-
-    return modelMatrix;
-}
-
-CameraZ getTestCamera(mz::ModelZ* model_ptr) {
-
-    RZ_TRACE("Inicializando camera...");
-
-    cameraState_t initialState;
-
-    initialState.lookAtActive = true;
-    initialState.perspectiveOn = true;
-
-    float bBoxDiagonal = model_ptr->getBoundingBoxDiagonal();
-    float cx = model_ptr->getBoundingBoxCenter().x;
-    float cy = model_ptr->getBoundingBoxCenter().y;
-    float cz = model_ptr->getBoundingBoxCenter().z;
-
-    initialState.nearDist = -0.1f;
-    initialState.farDist = -5000;
-    initialState.fovHor = glm::radians(60.f);
-    initialState.fovVert = glm::radians(60.f);
-    initialState.orthoDistance = bBoxDiagonal / 2.f;
-
-    float distanceToFitModel = bBoxDiagonal / (2*tanf(initialState.fovVert / 2.f));
-
-    printf("\n\nDistancia: %f", distanceToFitModel);
-
-    initialState.position = glm::vec3(cx, cy, distanceToFitModel);
-
-    initialState.lookatPosition = glm::vec3(cx, cy, cz);
-    initialState.viewDirection = glm::vec3(0.0f, 0.0f, -1);
-    initialState.upDirection = glm::vec3(0, 1, 0);
-    initialState.sideDirection = glm::vec3(1, 0, 0);
-
-    CameraZ camera(initialState);
-
-    camera.updateCameraMatrix();
-
-    RZ_INFO("Camera iniciada!");
-
-    return camera;
-}
-
-renderInfo_t setupRenderInfo(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
-    
-    RZ_TRACE("Renderizar modelo lido de arquivo com material...");
-
-    GLuint  VAOs[NumVAOs];
-    GLuint  Buffers[NumBuffersWithModels]; //NumBuffersWithModels //AQUI
-
-    int numTriangles = model_ptr->getNumberTriangles();
-    int numMaterials = model_ptr->getNumberMaterials();
-
-    GLuint  numVertices = 3 * numTriangles;
-
-    RZ_TRACE("Gerando vertex array e buffers...");
-
-    glGenVertexArrays(NumVAOs, VAOs);
-    glBindVertexArray(VAOs[Triangles]);
-    glGenBuffers(NumBuffersWithModels, Buffers); //AQUI
-
-    RZ_TRACE("Preparando Buffer Posicao...");   
-
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[PosBuffer]);
-    glBufferData(GL_ARRAY_BUFFER, numVertices*sizeof(glm::vec4)
-                , model_ptr->posBuffer
-                , GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(vPosition);
-    
-    //AQUI
-    RZ_TRACE("Preparando Buffer Cor Difusa...");
-
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[DiffuseBuffer]);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
-        , model_ptr->diffuseBuffer
-        , GL_STATIC_DRAW);
-
-    glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(vColor);
-    //AQUI
-
-    RZ_TRACE("Preparando Buffer Normal...");
-
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[NormBuffer]);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
-        , model_ptr->normBuffer
-        , GL_STATIC_DRAW);
-
-    glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(vNormal);
-    
-    //AQUI
-    RZ_TRACE("Preparando Buffer Ambiente...");
-
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[AmbientBuffer]);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
-        , model_ptr->ambientBuffer
-        , GL_STATIC_DRAW);
-
-    glVertexAttribPointer(vAmbient, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(vAmbient);
-
-    RZ_TRACE("Preparando Buffer Especular...");
-
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[SpecularBuffer]);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
-        , model_ptr->specularBuffer
-        , GL_STATIC_DRAW);
-    
-    glVertexAttribPointer(vSpecular, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(vSpecular);
-
-    RZ_TRACE("Preparando Buffer Coef Brilho Especular...");
-
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[SpcCoefBuffer]);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(float)
-        , model_ptr->spcShineCoefBuffer
-        , GL_STATIC_DRAW);
-
-    glVertexAttribPointer(vSpcCoef, 1, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
-    glEnableVertexAttribArray(vSpcCoef);
-    //AQUI
-
-    RZ_TRACE("Pronto. Definindo cor de fundo/clear e juntando as infos pra renderizar...");
-
-    const rz::colorf_t black = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-    renderInfo_t renderInfo = {
-        black[0],
-        black[1],
-        black[2],
-        black[3],
-        VAOs[Triangles],
-        numVertices,
-        renderWindow.window,
-        0,
-        camera_ptr,
-        model_ptr
-    };
-
-    return renderInfo;
-}
-
+//criar funções e/ou macros pra toggle e testes na input
 void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
+    
+    //sinais de controle definidos em input.hpp e input.cpp
+    //testa sinais e faz funcionar input, em especial controle de camera
 
     float basePosStepSize = 0.025f;
     float constexpr rotStepSize = glm::radians(1.8f);
@@ -208,6 +52,7 @@ void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
     static bool blockCycleDrawMode = false;
     static bool blockToogleCulling = false;
     static bool blockToogleCCWtoCW = false;
+    //^usadas para evitar de ficar ativando várias vezes enquanto se aperta o botão
 
     glm::vec3 translationCameraCoordinates(0, 0, 0);
     glm::vec3 rotation(0, 0, 0);
@@ -494,14 +339,6 @@ void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
         }
 
         camera_ptr->updateCameraMatrix();
-
-        /*
-        printf("\tcamera position: \t%f, %f, %f\n", camera->getPosition().x
-              , camera->getPosition().y, camera->getPosition().z);
-
-        printf("\tview direction: \t%f, %f, %f, fovV: %f\n", camera->getView().x
-            , camera->getView().y, camera->getView().z, camera->getFovVer());
-        */
     }
 
 }

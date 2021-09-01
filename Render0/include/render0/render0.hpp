@@ -1,9 +1,14 @@
 #pragma once
 
+//Definições, estruturas e funções para renderização visíveis a outros subsistemas.
+//(bastante acoplamente através daqui)
+//Funções de inicialização de shaders e de renderização.
+
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 
 #include "RZ_API/RZ_api.hpp"
+
 #include "logAPI.hpp"
 
 #include "camera.hpp"
@@ -87,3 +92,4 @@ int renderWithCamera( renderInfo_t *renderInfo, CameraZ camera
 int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4 modelMatrix
     , int shader, void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr));
 void initShaderPrograms();
+renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* model_ptr);

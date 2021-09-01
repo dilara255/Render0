@@ -1,3 +1,6 @@
+//Ponto de iício do programa. Ideia é passar funcionalidade de "modelRenderTest" pra
+//esse projeto aqui. Controles de GUI e etc também serão colocados nele. 
+
 #include "RZ_api.hpp"
 #include "logAPI.hpp"
 
@@ -10,7 +13,7 @@ int main(void){
 	if (!rz::init()) VZ_CRITICAL("\nRenderizador nao iniciou...");
 	
 	//rz::testTriangleWithCamera();
-	rz::modelMaterialRenderTest("models/2sap.max");
+	rz::modelMaterialRenderTest("models/cow.max");
 
 	VZ_TRACE("\nEnter para sair...");
 	getchar();

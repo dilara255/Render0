@@ -1,6 +1,6 @@
 #pragma once
 
-#pragma once
+//definições para controle dos projetos, sistemas, compilação, linkagem, etc
 
 #ifdef RZ_PLATFORM_WINDOWS
 	#define SYSTEM_NAME "Windows"

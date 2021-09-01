@@ -1,20 +1,30 @@
 #pragma once
 
-#include "miscStdHeaders.h"
-
-#include "RZ_api.hpp"
-#include "logAPI.hpp"
-
 /*
+//Define estruturas e classe de modelo.
+//
 //Dados do modelo:
-// 
-//-Modelo tem um array de materiais, um de triangulos, e tamanho de ambos;
+//
+//-Modelo tem um array de materiais, um de triangulos, tamanho de ambos e bounding box;
 //	-Triangulos cada um com 3 vertexes + face normal;
 //		--vertex com posicao, normal e indice de material;
 //			---posicao e normal são glm::vec4 (mas leem 3 componentes)
 //	-Material tem cor ambiente, difusa e especular e shine_coef
 //		--cores são a princípio array de floats, depois mudar pra glm::vec4
+//  -Bounding Box tem 2 vértices que englobam o modelo, o centro e a diagonal entre eles
+//
+//Além disso modelo contém buffers para uso pela gpu, que são um array para
+//cada atributo, com valores para todos vértices. Tem que mudar isso pros
+//materiais serem um array por material e adicionar buffer de índices de material.
+//
+//Há duplicação de dados. Poderia deixar só os buffers e criar métodos de acesso
+//pra outros usos. Além disso, não está usando index arrays.
 */
+
+#include "RZ_api.hpp"
+
+#include "logAPI.hpp"
+
 
 namespace mz {
 	typedef struct material_st {
@@ -35,14 +45,6 @@ namespace mz {
 		glm::vec4 faceNormal;
 	}triangle_t;
 
-	typedef struct boundingBox_st {
-		glm::vec4 minCoords;
-		glm::vec4 maxCoords;
-
-		glm::vec4 center;
-		float diagonal;
-	}boundingBox_t;
-
 	typedef struct model_st {
 		int numberTriangles;
 		int numberMaterials;
@@ -56,9 +58,9 @@ namespace mz {
 
 	public:
 
-		ModelZ(model_t model);
 		ModelZ(const char* model3DMaxFile);
 
+		boundingBox_t getCopyBoundingBox();
 		float getBoundingBoxDiagonal();
 		glm::vec4 getBoundingBoxCenter();
 		int ModelZ::getNumberTriangles();

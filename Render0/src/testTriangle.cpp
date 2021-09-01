@@ -1,3 +1,7 @@
+//Dois testes iniciais, para desenhar triângulos definidos em código, com e sem câmera
+//Talvez criar uma pasta pra testes? Eu acho que isso aqui eu não vou manter na verdade,
+//mas fica por enquanto
+
 #include "miscStdHeaders.h"
 
 #include "render0/render0.hpp"

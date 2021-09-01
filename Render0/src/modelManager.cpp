@@ -1,11 +1,15 @@
+// Classe de modelo, declarada em model0.hpp 
+// Carrega modelos .max e gera buffers a serem passados para placa de vídeo.
+// Estrutura de dados tem que ser refeita (duplicações), e o construtor tá bem feio : )
+
 #include "render0/model0.hpp"
 
 using namespace mz;
 
 boundingBox_t calculateBoundingBox(model_t model);
 
-ModelZ::ModelZ(model_t model) {
-	this->model = model;
+boundingBox_t ModelZ::getCopyBoundingBox() {
+	return this->model.bBox;
 }
 
 ModelZ::ModelZ(const char* model3DMaxFile) {

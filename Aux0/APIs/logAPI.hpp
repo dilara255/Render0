@@ -1,7 +1,14 @@
 #pragma once
 
+/*
+Define macros de API para facilitar log em console. Usa spdlog.
+No momento não dá pra passar variáveis nem gravar em arquivo, 
+apesar da biblioteca suportar isso.
+*/
+
 #include "core.hpp"
 
+//para os outros projetos poderem linkar as funções, declaradas em log.hpp
 #ifndef RZ_BUILD_LIB
     #include "../include/log.hpp"
 #endif
@@ -16,8 +23,6 @@ namespace util {
 #define L_WARN 2
 #define L_ERROR 3
 #define L_CRITICAL 4
-
-//Eventualmente criar macros "DEF_IFNOT_DISTRIB"?
 
 //MACROS log Render0
 #ifdef DISTRIB

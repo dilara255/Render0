@@ -1,3 +1,10 @@
+//Classe de câmera, declarada em camera.hpp
+//Suporta rotação, translação, projeção perspectiva e ortogonal e lookat
+//Usa coordenadas com vetores de base "view", "up" e "side".
+//Não há cuidado para tamanho de passo (alguñs métodos podem bugar ocm passos grandes)
+//Mantém vetores de base ortonormais
+//Guarda estado inicial para poder resetar
+
 #include "render0/camera.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -32,9 +39,52 @@ CameraZ::CameraZ(cameraState_t initialState) {
 	screenRatio = DEFAULT_WIDTH / (float)DEFAULT_HEIGHT;
 }
 
+CameraZ CameraZ::getCameraCenteredOnModel(mz::ModelZ* model_ptr, mz::boundingBox_t bBox,
+	                                      bool lookAt, bool perspective,
+	                                      float fov, float nearDist, float farDist) {
+
+	RZ_TRACE("Inicializando camera...");
+
+	cameraState_t initialState;
+
+	initialState.lookAtActive = lookAt;
+	initialState.perspectiveOn = perspective;
+
+	float bBoxDiagonal = bBox.diagonal;
+	float cx = bBox.center.x;
+	float cy = bBox.center.y;
+	float cz = bBox.center.z;
+
+	initialState.nearDist = nearDist;
+	initialState.farDist = farDist;
+	initialState.fovHor = glm::radians(fov);
+	initialState.fovVert = glm::radians(fov);
+	initialState.orthoDistance = bBoxDiagonal / 2.f;
+
+	float distanceToFitModel = bBoxDiagonal / (2 * tanf(initialState.fovVert / 2.f));
+
+	printf("\n\nDistancia: %f", distanceToFitModel);
+
+	initialState.position = glm::vec3(cx, cy, distanceToFitModel);
+
+	initialState.lookatPosition = glm::vec3(cx, cy, cz);
+	initialState.viewDirection = glm::vec3(0.0f, 0.0f, -1);
+	initialState.upDirection = glm::vec3(0, 1, 0);
+	initialState.sideDirection = glm::vec3(1, 0, 0);
+
+	CameraZ camera(initialState);
+
+	camera.updateCameraMatrix();
+
+	RZ_INFO("Camera iniciada!");
+
+	return camera;
+}
+
 void CameraZ::translateWorldCoord(glm::vec3 translation) {
 	this->state.position += glm::vec3(translation);
 }
+
 void CameraZ::translateCameraCoord(glm::vec3 translation) {
 	
 	this->state.position += this->state.viewDirection * translation.z;
@@ -96,7 +146,9 @@ glm::vec3 CameraZ::getLookAtPos() {
 }
 
 void CameraZ::rotate(radians angle, glm::vec3* directionFrom, glm::vec3* directionTo){
-//eventualmente usar versão em matriz né, mas por enquanto vai isso:
+//rotaciona em torno do eixo perpendicular aos vetores dados. Efeito é como se "girasse"
+//um dos vetores na direção do outro (e o outro junto). Equivalente às operações em uma
+//matriz de rotação.
 
 	glm::vec3 tempDirectionFrom = *directionFrom;
 	glm::float32 sineAngle = glm::sin(angle);
@@ -253,54 +305,15 @@ void CameraZ::updateViewMatrix() {
 								, glm::vec4( 0, 0, 0, 1) );
 	
 	this->state.view = cameraCoordsTransf * this->state.view;
-
-	/*Old View Matrix Update (does something kinda funny maybe):
-	glm::float32 sideDotPos = glm::dot(this->state.sideDirection, this->state.position);
-	glm::float32 upDotPos = glm::dot(this->state.upDirection, this->state.position);
-	glm::float32 viewDotPos = glm::dot(this->state.viewDirection, this->state.position);
-
-	this->state.view = glm::mat4( glm::vec4(this->state.sideDirection, -sideDotPos)
-								, glm::vec4(this->state.upDirection, -upDotPos)
-								, glm::vec4(this->state.viewDirection, -viewDotPos)
-								, glm::vec4(0.f, 0.f, 0.f, 1.f) );
-	*/
 }
 
 void CameraZ::updatePerspectiveMatrix() {
 	if (this->state.perspectiveOn) {
-		/*
-		float farD = this->state.farDist;
-		float nearD = this->state.nearDist;
-		float top = fabs(nearD) * sinf(this->state.fovVert / 2.0f);
-		float bottom = -top;
-		//cuidado com possível redundância de levar em conta fovHor separado E ratio
-		float right = fabs(nearD) * sinf(this->state.fovHor / 2.0f) * screenRatio;
-		//------------------------------------------------------------------------
-		float left = -right;
-		*/
 
 		this->state.perspective = glm::perspective( this->state.fovVert
 			                                      , screenRatio
 			                                      , fabs(this->state.nearDist)
 												  , fabs(this->state.farDist) );
-
-		/*
-		glm::mat4 Perspec(
-			nearD, 0.0f, 0.0f       , 0.0f,
-			0.0f, nearD, 0.0f       , 0.0f,
-			0.0f, 0.0f, nearD + farD, -farD * nearD,
-			0.0f, 0.0f, -1.0f        , 0.0f
-		);
-
-		glm::mat4 Ortho(
-			2.0f / (right - left), 0.0f, 0.0f, -(right + left) / (right - left),
-			0.0f, 2.0f / (top - bottom), 0.0f, -(top + bottom) / (top - bottom),
-			0.0f, 0.0f, 2.0f / (farD - nearD), -(farD + nearD) / (farD - nearD),
-			0.0f, 0.0f, 0.0f, 1.0f
-		);
-
-		this->state.perspective = -Ortho * Perspec;
-		*/
 	}
 
 	else {
@@ -312,15 +325,6 @@ void CameraZ::updatePerspectiveMatrix() {
 		float nearD = this->state.nearDist;
 
 		this->state.perspective = glm::ortho(left, right, bottom, top, nearD, farD);
-
-		/*
-		this->state.perspective = glm::mat4(
-			2.0f / (right - left), 0.0f, 0.0f, -(right + left) / (right - left),
-			0.0f, 2.0f / (top - bottom), 0.0f, -(top + bottom) / (top - bottom),
-			0.0f, 0.0f, 2.0f / (farD - nearD), -(farD + nearD) / (farD - nearD),
-			0.0f, 0.0f, 0.0f                 ,   1.0f
-		);
-		*/
 	}
 }
 
@@ -329,5 +333,4 @@ void CameraZ::updateCameraMatrix() {
 	this->updatePerspectiveMatrix();
 	this->state.cameraMatrix = this->state.perspective * this->state.view;
 	this->cameraProjection = this->state.cameraMatrix;
-	//this->cameraProjection = this->state.view;
 }

@@ -1,5 +1,8 @@
 #pragma once
 
+//define struct que receberá estado de controles
+//input.cpp faz a ligação entre inputs de fato e essas variáveis de estado
+
 #include <GLFW/glfw3.h>
 #include "logAPI.hpp"
 
@@ -49,4 +52,4 @@ namespace iz {
 	} inputGiven_t;
 }
 
-inline iz::inputGiven_t keyboardInput;
+inline iz::inputGiven_t keyboardInput; //encapsular melhor

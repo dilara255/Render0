@@ -1,30 +1,24 @@
+/*
+* Define os programas de shader, os lê e carrega
+*/
+
 #include "render0/render0.hpp"
 
-void initShaderPrograms() {
-    shaderPrograms[SIMPLE].shadersID = SIMPLE;
-    shaderPrograms[SIMPLE].shaderInfo[VERT] =
-        { GL_VERTEX_SHADER, "shaders/triangles.vert" };
-    shaderPrograms[SIMPLE].shaderInfo[FRAG] =
-        { GL_FRAGMENT_SHADER, "shaders/triangles.frag" };
-    shaderPrograms[SIMPLE].shaderInfo[NOT_USING] =
-        { GL_NONE, NULL };
-
-    shaderPrograms[SIMPLE_CAMERA].shadersID = SIMPLE_CAMERA;
-    shaderPrograms[SIMPLE_CAMERA].shaderInfo[VERT] =
-        { GL_VERTEX_SHADER, "shaders/trianglesWithCamera.vert" };
-    shaderPrograms[SIMPLE_CAMERA].shaderInfo[FRAG] =
-        { GL_FRAGMENT_SHADER, "shaders/trianglesWithCamera.frag" };
-    shaderPrograms[SIMPLE_CAMERA].shaderInfo[NOT_USING] =
-        { GL_NONE, NULL };
-
-    shaderPrograms[SIMPLE_MVP].shadersID = SIMPLE_MVP;
-    shaderPrograms[SIMPLE_MVP].shaderInfo[VERT] =
-    { GL_VERTEX_SHADER, "shaders/simpleModelWithMVP.vert" };
-    shaderPrograms[SIMPLE_MVP].shaderInfo[FRAG] =
-    { GL_FRAGMENT_SHADER, "shaders/simpleModelWithMVP.frag" };
-    shaderPrograms[SIMPLE_MVP].shaderInfo[NOT_USING] =
+void initShader(int shader, const char* fileVertex, const char* fileFragment) {
+    shaderPrograms[shader].shadersID = shader;
+    shaderPrograms[shader].shaderInfo[VERT] =
+    { GL_VERTEX_SHADER, fileVertex };
+    shaderPrograms[shader].shaderInfo[FRAG] =
+    { GL_FRAGMENT_SHADER, fileFragment };
+    shaderPrograms[shader].shaderInfo[NOT_USING] =
     { GL_NONE, NULL };
-  
+}
+
+void initShaderPrograms() {
+    
+    initShader(SIMPLE, "shaders/triangles.vert", "shaders/triangles.frag");
+    initShader(SIMPLE_CAMERA, "shaders/trianglesWithCamera.vert", "shaders/trianglesWithCamera.frag");
+    initShader(SIMPLE_MVP, "shaders/simpleModelWithMVP.vert", "shaders/simpleModelWithMVP.frag"); 
 }
 
 static const GLchar* ReadShader(const char* filename)

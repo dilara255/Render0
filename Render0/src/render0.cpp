@@ -1,3 +1,11 @@
+/*
+* Inicialização geral do renderer e dependências e encerramento GLFW. 
+* Funções de renderização com/sem câmera e modelo. Criação de estado para renderização.
+* Callback de erro de glfw e função de checagem de erros de OpenGL
+* 
+* LOOPING PRINCIPAL ESTÁ AQUI, dentro das funções de render. Ideia é tirar isso daqui.
+*/
+
 #include "render0/render0.hpp"
 #include "render0/model0.hpp"
 #include "RZ_API/RZ_api.hpp"
@@ -212,6 +220,108 @@ int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4
     RZ_INFO("Janela Fechada");
 
     return 0;
+}
+
+renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
+
+    RZ_TRACE("Renderizar modelo lido de arquivo com material...");
+
+    GLuint  VAOs[NumVAOs];
+    GLuint  Buffers[NumBuffersWithModels]; //NumBuffersWithModels //AQUI
+
+    int numTriangles = model_ptr->getNumberTriangles();
+    int numMaterials = model_ptr->getNumberMaterials();
+
+    GLuint  numVertices = 3 * numTriangles;
+
+    RZ_TRACE("Gerando vertex array e buffers...");
+
+    glGenVertexArrays(NumVAOs, VAOs);
+    glBindVertexArray(VAOs[Triangles]);
+    glGenBuffers(NumBuffersWithModels, Buffers); //AQUI
+
+    RZ_TRACE("Preparando Buffer Posicao...");
+
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[PosBuffer]);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
+        , model_ptr->posBuffer
+        , GL_STATIC_DRAW);
+
+    glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(vPosition);
+
+    //AQUI
+    RZ_TRACE("Preparando Buffer Cor Difusa...");
+
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[DiffuseBuffer]);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
+        , model_ptr->diffuseBuffer
+        , GL_STATIC_DRAW);
+
+    glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(vColor);
+    //AQUI
+
+    RZ_TRACE("Preparando Buffer Normal...");
+
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[NormBuffer]);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
+        , model_ptr->normBuffer
+        , GL_STATIC_DRAW);
+
+    glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(vNormal);
+
+    //AQUI
+    RZ_TRACE("Preparando Buffer Ambiente...");
+
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[AmbientBuffer]);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
+        , model_ptr->ambientBuffer
+        , GL_STATIC_DRAW);
+
+    glVertexAttribPointer(vAmbient, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(vAmbient);
+
+    RZ_TRACE("Preparando Buffer Especular...");
+
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[SpecularBuffer]);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
+        , model_ptr->specularBuffer
+        , GL_STATIC_DRAW);
+
+    glVertexAttribPointer(vSpecular, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(vSpecular);
+
+    RZ_TRACE("Preparando Buffer Coef Brilho Especular...");
+
+    glBindBuffer(GL_ARRAY_BUFFER, Buffers[SpcCoefBuffer]);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(float)
+        , model_ptr->spcShineCoefBuffer
+        , GL_STATIC_DRAW);
+
+    glVertexAttribPointer(vSpcCoef, 1, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+    glEnableVertexAttribArray(vSpcCoef);
+    //AQUI
+
+    RZ_TRACE("Pronto. Definindo cor de fundo/clear e juntando as infos pra renderizar...");
+
+    const rz::colorf_t black = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+    renderInfo_t renderInfo = {
+        black[0],
+        black[1],
+        black[2],
+        black[3],
+        VAOs[Triangles],
+        numVertices,
+        renderWindow.window,
+        0,
+        camera_ptr,
+        model_ptr
+    };
+
+    return renderInfo;
 }
 
 void error_callback(int error, const char* description)
