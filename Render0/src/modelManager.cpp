@@ -139,10 +139,15 @@ ModelZ::ModelZ(const char* model3DMaxFile) {
 
 	this->posBuffer              = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
 	this->normBuffer             = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
+	
+
+	//AQUI
 	this->ambientBuffer          = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
 	this->diffuseBuffer          = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
 	this->specularBuffer         = (glm::vec4*)malloc(numberVertices * sizeof(glm::vec4));
 	this->spcShineCoefBuffer     = (float*)malloc(numberVertices * sizeof(float));
+	//AQUI
+
 
 	RZ_TRACE("Espaco alocado, copiar dados...");
 
@@ -162,6 +167,8 @@ ModelZ::ModelZ(const char* model3DMaxFile) {
 			this->normBuffer[index].z = this->model.triangles[i].vertexes[j].normal.z;
 			this->normBuffer[index].w = this->model.triangles[i].vertexes[j].normal.w;
 			
+
+			//AQUI
 			matIndex = this->model.triangles[i].vertexes[j].materialIndex;
 
 			this->ambientBuffer[index].r = this->model.materials[matIndex].ambient[0];
@@ -180,6 +187,7 @@ ModelZ::ModelZ(const char* model3DMaxFile) {
 			this->specularBuffer[index].w = this->model.materials[matIndex].specular[3];
 
 			this->spcShineCoefBuffer[index] = this->model.materials[matIndex].specShineCoef;
+			//AQUI
 		}
 	}
 

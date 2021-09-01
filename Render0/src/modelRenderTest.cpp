@@ -15,7 +15,7 @@ int rz::modelMaterialRenderTest(const char* modelFile) {
 
 	RZ_TRACE("Renderizar modelo lido, com camera e materiais");
 	
-	static mz::ModelZ testModel("models/2sap.max");
+	static mz::ModelZ testModel(modelFile);
     CameraZ camera = getTestCamera(&testModel);
     renderInfo = setupRenderInfo(&camera, &testModel);
     static glm::mat4 modelMatrixMMTest = getCenteringModelMatrix(testModel);
@@ -61,12 +61,14 @@ CameraZ getTestCamera(mz::ModelZ* model_ptr) {
     float cz = model_ptr->getBoundingBoxCenter().z;
 
     initialState.nearDist = -0.1f;
-    initialState.farDist = -100;
+    initialState.farDist = -5000;
     initialState.fovHor = glm::radians(60.f);
     initialState.fovVert = glm::radians(60.f);
     initialState.orthoDistance = bBoxDiagonal / 2.f;
 
     float distanceToFitModel = bBoxDiagonal / (2*tanf(initialState.fovVert / 2.f));
+
+    printf("\n\nDistancia: %f", distanceToFitModel);
 
     initialState.position = glm::vec3(cx, cy, distanceToFitModel);
 
@@ -89,7 +91,7 @@ renderInfo_t setupRenderInfo(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
     RZ_TRACE("Renderizar modelo lido de arquivo com material...");
 
     GLuint  VAOs[NumVAOs];
-    GLuint  Buffers[NumBuffersWithModels];
+    GLuint  Buffers[NumBuffersWithModels]; //NumBuffersWithModels //AQUI
 
     int numTriangles = model_ptr->getNumberTriangles();
     int numMaterials = model_ptr->getNumberMaterials();
@@ -100,7 +102,7 @@ renderInfo_t setupRenderInfo(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
 
     glGenVertexArrays(NumVAOs, VAOs);
     glBindVertexArray(VAOs[Triangles]);
-    glGenBuffers(NumBuffersWithModels, Buffers);
+    glGenBuffers(NumBuffersWithModels, Buffers); //AQUI
 
     RZ_TRACE("Preparando Buffer Posicao...");   
 
@@ -112,6 +114,7 @@ renderInfo_t setupRenderInfo(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
     glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(vPosition);
     
+    //AQUI
     RZ_TRACE("Preparando Buffer Cor Difusa...");
 
     glBindBuffer(GL_ARRAY_BUFFER, Buffers[DiffuseBuffer]);
@@ -121,6 +124,7 @@ renderInfo_t setupRenderInfo(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
 
     glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(vColor);
+    //AQUI
 
     RZ_TRACE("Preparando Buffer Normal...");
 
@@ -131,7 +135,8 @@ renderInfo_t setupRenderInfo(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
 
     glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(vNormal);
-
+    
+    //AQUI
     RZ_TRACE("Preparando Buffer Ambiente...");
 
     glBindBuffer(GL_ARRAY_BUFFER, Buffers[AmbientBuffer]);
@@ -155,12 +160,13 @@ renderInfo_t setupRenderInfo(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
     RZ_TRACE("Preparando Buffer Coef Brilho Especular...");
 
     glBindBuffer(GL_ARRAY_BUFFER, Buffers[SpcCoefBuffer]);
-    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
+    glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(float)
         , model_ptr->spcShineCoefBuffer
         , GL_STATIC_DRAW);
 
     glVertexAttribPointer(vSpcCoef, 1, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(vSpcCoef);
+    //AQUI
 
     RZ_TRACE("Pronto. Definindo cor de fundo/clear e juntando as infos pra renderizar...");
 
@@ -184,11 +190,11 @@ renderInfo_t setupRenderInfo(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
 
 void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
 
-    float posStepSize = 0.025f;
+    float basePosStepSize = 0.025f;
     float constexpr rotStepSize = glm::radians(1.8f);
     float fovStepSize = 0.025f;
-    float farStepSize = 0.35f;
-    float nearStepSize = 0.1f;
+    float baseFarStepSize = 0.35f;
+    float baseNearStepSize = 0.1f;
     float colorStep = 0.01f;
 
     bool hasToUpdate = false;
@@ -206,12 +212,21 @@ void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
     glm::vec3 translationCameraCoordinates(0, 0, 0);
     glm::vec3 rotation(0, 0, 0);
 
+    static float speedMultiplier;
+    
+    float posStepSize = basePosStepSize;
+    float nearStepSize = baseNearStepSize;
+    float farStepSize = baseFarStepSize;
+
     if (camera_ptr->lookAtIsOn() && useCameraCoordinates) {
-        float speedMultiplier = glm::length(camera_ptr->getPosition() - camera_ptr->getView());
+        speedMultiplier = glm::length(camera_ptr->getPosition() - camera_ptr->getLookAtPos());
         if (speedMultiplier < 0.25f) speedMultiplier = 0.25f;
-        else if (speedMultiplier > 50.f) speedMultiplier = 50.f;
-        posStepSize *= speedMultiplier;
     }
+    posStepSize *= speedMultiplier;
+
+    float nearFarMultiplier = fabs(camera_ptr->getFarDist() - camera_ptr->getNearDist())/100.f;
+    nearStepSize *= nearFarMultiplier;
+    farStepSize *= nearFarMultiplier;
 
     if (keyboardInput.closeWindowPressed) {
         glfwSetWindowShouldClose(renderInfo_ptr->window, GL_TRUE);

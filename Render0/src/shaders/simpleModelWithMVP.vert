@@ -16,5 +16,11 @@ out vec4 fColor;
 void main()
 {
     gl_Position = vPV_matrix * vModel_matrix * vPosition;
-    fColor = vColorUniform;
+
+    vec4 lightSource = normalize(vec4(-1, -1, -1, 1));
+
+    float diffuse = dot(vNormal, lightSource);
+    diffuse = diffuse * max(diffuse, 0);
+
+    fColor = vColorUniform * (diffuse + 0.075);
 }

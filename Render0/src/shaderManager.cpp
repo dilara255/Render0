@@ -27,27 +27,6 @@ void initShaderPrograms() {
   
 }
 
-/*
-    //shaders ---v
-
-    RZ_TRACE("Carregar shaders...");
-
-    shaderPrograms[SIMPLE].shaderProgramId = LoadShaders(shaderPrograms[SIMPLE].shaderInfo);
-    RZ_TRACE("Ligar programa...");
-    glUseProgram(shaderPrograms[SIMPLE].shaderProgramId);
-
-    RZ_TRACE("Shaders ligados...");
-
-    glVertexAttribPointer(vPosition, 2, GL_FLOAT
-        , GL_FALSE, sizeof(VertexData)
-        , BUFFER_OFFSET(sizeof(vertices[0].color)));
-    glVertexAttribPointer(vColor, 4, GL_UNSIGNED_BYTE
-        , GL_TRUE, sizeof(VertexData)
-        , BUFFER_OFFSET(0));
-
-    //shaders ---^
-*/
-
 static const GLchar* ReadShader(const char* filename)
 {
     FILE* infile = fopen(filename, "rb");

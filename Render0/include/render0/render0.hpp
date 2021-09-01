@@ -44,7 +44,7 @@ typedef struct renderInfo_st {
     CameraZ* cameraState_ptr;
     mz::ModelZ* model_ptr = (mz::ModelZ * )NULL;
     int modes[3] = { GL_TRIANGLES , GL_LINE_LOOP , GL_POINTS };
-    int faceDirectionForCulling = GL_CCW; //GL_CW
+    int faceDirectionForCulling = GL_CW; //GL_CCW
     bool shouldCull = false;
     glm::vec4 colorForUniform = glm::vec4(0.55f, 0.1f, 0.85f, 1.f);
 } renderInfo_t;

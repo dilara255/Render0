@@ -2,7 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #define MIN_NEAR (0.005f)
-#define MAX_FAR (200.f)
+#define MAX_FAR (15000.f)
 
 CameraZ::CameraZ(cameraState_t initialState) {
 	this->state.lookAtActive = initialState.lookAtActive;
@@ -89,6 +89,10 @@ void CameraZ::pitch(radians angle) {
 glm::vec3 CameraZ::getView() {
 	return glm::vec3(this->state.viewDirection.x
 		, this->state.viewDirection.y, this->state.viewDirection.z);
+}
+
+glm::vec3 CameraZ::getLookAtPos() {
+	return glm::vec3(this->state.lookatPosition);
 }
 
 void CameraZ::rotate(radians angle, glm::vec3* directionFrom, glm::vec3* directionTo){

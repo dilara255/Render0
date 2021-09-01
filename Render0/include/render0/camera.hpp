@@ -52,6 +52,7 @@ public:
 	void lookAtTurnOff();
 	bool lookAtIsOn();
 	void lookAtSetPos(glm::vec3 position);
+	glm::vec3 getLookAtPos();
 
 	void perspectiveToggle();
 	void perspectiveTurnOn();
