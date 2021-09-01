@@ -132,17 +132,17 @@ void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
         || (translationCameraCoordinates.z != 0));
 
     if (keyboardInput.yawLeftPressed) {
-        rotation.y -= rotStepSize;
+        rotation.y += rotStepSize;
     }
     if (keyboardInput.yawRightPressed) {
-        rotation.y += rotStepSize;
+        rotation.y -= rotStepSize;
     }
 
     if (keyboardInput.pitchUpPressed) {
-        rotation.x += rotStepSize;
+        rotation.x -= rotStepSize;
     }
     if (keyboardInput.pitchDownPressed) {
-        rotation.x -= rotStepSize;
+        rotation.x += rotStepSize;
     }
 
     if (keyboardInput.rollCWPressed) {
