@@ -3,7 +3,8 @@
 * Funções de renderização com/sem câmera e modelo. Criação de estado para renderização.
 * Callback de erro de glfw e função de checagem de erros de OpenGL
 * 
-* LOOPING PRINCIPAL ESTÁ AQUI, dentro das funções de render. Ideia é tirar isso daqui.
+* Depndendo do modo de render, LOOPING PRINCIPAL ainda ESTÁ AQUI, dentro das funções de render. 
+* Ideia é tirar isso daqui pra todos modos.
 */
 
 #include "render0/render0.hpp"
@@ -82,51 +83,42 @@ namespace rz {
     }
 }
 
-bool render(renderInfo_t* renderInfo, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
+bool render(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
             void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr)) {
     
     static float clearToThisDepth = 1.0f;
-    bool keepRendering = !glfwWindowShouldClose(renderInfo->window);
+    bool keepRendering = !glfwWindowShouldClose(renderInfo_ptr->window);
 
-    if (!keepRendering) {
-        checkOGlErrors();
+    glUniform4fv(renderInfo_ptr->uniformLocations[vColorUniform], 1,
+        &renderInfo_ptr->colorForUniform.r);
+    glUniformMatrix4fv(renderInfo_ptr->uniformLocations[vPV_matrix], 1,
+        false, &camera_ptr->cameraProjection[0][0]);
+    glUniformMatrix4fv(renderInfo_ptr->uniformLocations[vModel_matrix], 1,
+        false, modelMatrixStart_ptr);
 
-        rz::terminate();
-        RZ_INFO("Janela Fechada");
+    if (renderInfo_ptr->shouldCull) {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glFrontFace(renderInfo_ptr->faceDirectionForCulling);
     }
-    else {
+    else glDisable(GL_CULL_FACE);
 
-        glUniform4fv(renderInfo->uniformLocations[vColorUniform], 1,
-            &renderInfo->colorForUniform.r);
-        glUniformMatrix4fv(renderInfo->uniformLocations[vPV_matrix], 1, 
-            false, &camera_ptr->cameraProjection[0][0]);
-        glUniformMatrix4fv(renderInfo->uniformLocations[vModel_matrix], 1, 
-            false, modelMatrixStart_ptr);
+    glClearBufferfv(GL_COLOR, 0, renderInfo_ptr->clearColor);
+    glClearBufferfv(GL_DEPTH, 0, &clearToThisDepth);
 
-        if (renderInfo->shouldCull) {
-            glEnable(GL_CULL_FACE);
-            glCullFace(GL_BACK);
-            glFrontFace(renderInfo->faceDirectionForCulling);
-        }
-        else glDisable(GL_CULL_FACE);
+    glBindVertexArray(renderInfo_ptr->VAO);
 
-        glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
-        glClearBufferfv(GL_DEPTH, 0, &clearToThisDepth);
+    glDrawArrays(renderInfo_ptr->modes[renderInfo_ptr->mode], 0, renderInfo_ptr->numVertices);
 
-        glBindVertexArray(renderInfo->VAO);
+    gz::startGuiFrame();
+    gz::showGuiWindows(renderInfo_ptr->clearColor);
+    gz::renderGui();
 
-        glDrawArrays(renderInfo->modes[renderInfo->mode], 0, renderInfo->numVertices);
+    glfwSwapBuffers(renderInfo_ptr->window);
 
-        gz::startGuiFrame();
-        gz::showGuiWindows(renderInfo->clearColor);
-        gz::renderGui();
+    glfwPollEvents();
 
-        glfwSwapBuffers(renderInfo->window);
-
-        glfwPollEvents();
-
-        controlTest(camera_ptr, renderInfo);
-    }
+    controlTest(camera_ptr, renderInfo_ptr);
 
     return keepRendering;
 }

@@ -83,5 +83,6 @@
     <ClCompile Include="src\testTriangle.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\mainLoop.cpp" />
   </ItemGroup>
 </Project>

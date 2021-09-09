@@ -26,7 +26,12 @@ int rz::modelMaterialRenderTest(const char* modelFile) {
     static glm::mat4 modelMatrixMMTest = glm::mat4(1.0f); //centrando pela camera
     
     setupRender(&renderInfo, SIMPLE_MVP);
-    while(render(&renderInfo, &cam, &modelMatrixMMTest[0][0], controlTest));
+    mainLoop(&renderInfo, &cam, &modelMatrixMMTest[0][0], controlTest);
+
+    checkOGlErrors();
+
+    rz::terminate();
+    RZ_INFO("Janela Fechada");
 
     return 1;
 }

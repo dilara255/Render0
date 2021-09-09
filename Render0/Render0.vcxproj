@@ -320,6 +320,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
     <ClCompile Include="src\imGui\imgui_tables.cpp" />
     <ClCompile Include="src\imGui\imgui_widgets.cpp" />
     <ClCompile Include="src\input0.cpp" />
+    <ClCompile Include="src\mainLoop.cpp" />
     <ClCompile Include="src\modelManager.cpp" />
     <ClCompile Include="src\modelRenderTest.cpp" />
     <ClCompile Include="src\render0.cpp" />

@@ -87,14 +87,27 @@ inline shaderPrograms_t shaderPrograms[NUMBER_SHADERS];
 inline windowParams_t renderWindow;
 
 GLuint LoadShaders(shaderInfo_t* shaders);
-int renderSimple(renderInfo_t renderInfo);
-int renderWithCamera( renderInfo_t *renderInfo, CameraZ camera
-                    , void (*controlTestCamera) (CameraZ* camera));
-int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4 modelMatrix
-    , int shader, void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr));
+
 void initShaderPrograms();
 renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* model_ptr);
 
 void setupRender(renderInfo_t* renderInfo, int shader);
-bool render(renderInfo_t* renderInfo, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
+bool render(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
             void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr));
+
+void mainLoop(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr,
+    float* modelMatrixStart_ptr,
+    void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr));
+
+void checkOGlErrors();
+
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+//Other Rendering modes, to be cleaned up soon:
+///////////////////////////////////////////////
+
+int renderSimple(renderInfo_t renderInfo);
+int renderWithCamera(renderInfo_t* renderInfo, CameraZ camera
+    , void (*controlTestCamera) (CameraZ* camera));
+int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4 modelMatrix
+    , int shader, void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr));
