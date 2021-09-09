@@ -16,6 +16,7 @@ namespace rz {
 	RZ_API int modelMaterialRenderTest(const char* modelFile);
 	RZ_API void terminate(void);
 
+	inline const char* glsl_version = "#version 330";
 	typedef float colorf_t[4];
 }
 

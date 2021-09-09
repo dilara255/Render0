@@ -21,6 +21,7 @@ ModelZ::ModelZ(const char* model3DMaxFile) {
 	if (fp == NULL) {
 		RZ_CRITICAL("Nao conseguiu abrir o arquivo de modelo! Saindo...");
 		printf("\t( arquivo: %s )\n", model3DMaxFile);
+		getchar();
 		exit(1);
 	}
 

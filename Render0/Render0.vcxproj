@@ -139,7 +139,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Dependencies\imGui;..\Dependencies\imGui\backends;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -165,7 +165,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Dependencies\imGui;..\Dependencies\imGui\backends;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -191,7 +191,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Dependencies\imGui;..\Dependencies\imGui\backends;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -220,7 +220,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Dependencies\imGui;..\Dependencies\imGui\backends;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -249,7 +249,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X86;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Dependencies\imGui;..\Dependencies\imGui\backends;..\Aux0\APIs;..\Dependencies\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -278,7 +278,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>RENDER0;GLFW_INCLUDE_NONE;X64;RZ_PLATFORM_WINDOWS;RZ_BUILD_DLL;DISTRIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Dependencies\glm\include;..\Dependencies\spdlog\include;include;include\RZ_API;..\Dependencies\glad\include;..\Dependencies\imGui;..\Dependencies\imGui\backends;..\Aux0\APIs;..\Dependencies\GLFW64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -303,14 +303,22 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\RZ_API\RZ_api.hpp" />
     <ClInclude Include="include\input0.hpp" />
     <ClInclude Include="include\render0\camera.hpp" />
+    <ClInclude Include="include\render0\gui0.hpp" />
     <ClInclude Include="include\render0\model0.hpp" />
-    <ClInclude Include="include\RZ_API\RZ_api.hpp" />
     <ClInclude Include="include\render0\render0.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\gui0.cpp" />
+    <ClCompile Include="src\imGui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="src\imGui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\imGui\imgui.cpp" />
+    <ClCompile Include="src\imGui\imgui_draw.cpp" />
+    <ClCompile Include="src\imGui\imgui_tables.cpp" />
+    <ClCompile Include="src\imGui\imgui_widgets.cpp" />
     <ClCompile Include="src\input0.cpp" />
     <ClCompile Include="src\modelManager.cpp" />
     <ClCompile Include="src\modelRenderTest.cpp" />

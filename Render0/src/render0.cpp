@@ -8,6 +8,7 @@
 
 #include "render0/render0.hpp"
 #include "render0/model0.hpp"
+#include "render0/gui0.hpp"
 #include "RZ_API/RZ_api.hpp"
 
 void error_callback(int error, const char* description);
@@ -32,6 +33,9 @@ namespace rz {
         RZ_TRACE("Setar Callback de erro e tentar criar janela...");
 
         glfwSetErrorCallback(error_callback);
+
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
         renderWindow.window = glfwCreateWindow(renderWindow.width, renderWindow.height
             , renderWindow.title, NULL, NULL);
@@ -62,136 +66,42 @@ namespace rz {
 
         iz::init(renderWindow.window);
 
+        RZ_TRACE("Iniciando imGui..");
+
+        gz::init(renderWindow.window);
+
+        RZ_INFO("\n\nPronto!");
+
         return 1;
     }
 
     void terminate() {
+        if(gz::imGuiOn) gz::terminate();
         glfwTerminate();
         RZ_TRACE("GLFW fechado");
     }
-
-    int renderTestLegacy() {
-
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        /*Define triangle*/
-        glBegin(GL_TRIANGLES);
-        glVertex2f(-0.5f, -0.5f);
-        glVertex2f(0.0f, 0.5f);
-        glVertex2f(0.5f, -0.5f);
-        glEnd();
-
-        /* Swap front and back buffers */
-        glfwSwapBuffers(renderWindow.window);
-
-        /* Poll for and process events */
-        glfwPollEvents();
-
-        return !glfwWindowShouldClose(renderWindow.window);
-    }
 }
 
-int renderSimple(renderInfo_t renderInfo) {
+bool render(renderInfo_t* renderInfo, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
+            void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr)) {
+    
+    static float clearToThisDepth = 1.0f;
+    bool keepRendering = !glfwWindowShouldClose(renderInfo->window);
 
-    RZ_INFO("Habilitando atributos vColor e vPosition...");
+    if (!keepRendering) {
+        checkOGlErrors();
 
-    glEnableVertexAttribArray(vColor);
-    glEnableVertexAttribArray(vPosition);
-
-    RZ_INFO("Renderizar...");
-
-    while (!glfwWindowShouldClose(renderInfo.window))
-    {
-        glClearBufferfv(GL_COLOR, 0, renderInfo.clearColor);
-
-        glBindVertexArray(renderInfo.VAO);
-
-        glDrawArrays(renderInfo.mode, 0, renderInfo.numVertices);
-
-        glfwSwapBuffers(renderInfo.window);
-
-        glfwPollEvents();
+        rz::terminate();
+        RZ_INFO("Janela Fechada");
     }
+    else {
 
-    RZ_INFO("Chega de triangulo...");
-
-    rz::terminate();
-
-    return 1;
-}
-
-int renderWithCamera( renderInfo_t *renderInfo, CameraZ camera
-                    , void (*controlTestCamera) (CameraZ *camera)) {
-
-    RZ_INFO("Habilitando atributos vColor, vPosition e Matriz Projecao...");
-
-    glEnableVertexAttribArray(vColor);
-    glEnableVertexAttribArray(vPosition);
-    
-    glm::int32_t projectionLocation = glGetUniformLocation(shaderPrograms[SIMPLE_CAMERA].shaderProgramId
-                                                          , "vProjection");
-    
-    printf("\t\tLocalizacao uniform projecao: %i\n", projectionLocation);
-
-    RZ_INFO("Renderizar...");
-
-    while (!glfwWindowShouldClose(renderInfo->window))
-    {
-        glUniformMatrix4fv(projectionLocation, 1, false, &camera.cameraProjection[0][0]);
-
-        glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
-
-        glBindVertexArray(renderInfo->VAO);
-
-        glDrawArrays(renderInfo->mode, 0, renderInfo->numVertices);
-
-        glfwSwapBuffers(renderInfo->window);
-
-        glfwPollEvents();
-
-        controlTestCamera(&camera);
-    }
-
-    RZ_INFO("Chega de triangulo...");
-
-    rz::terminate();
-
-    return 1;
-}
-
-
-int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4 modelMatrix
-    , int shader, void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr)) {
-    
-    RZ_TRACE("Preparando para renderizar. Carregar shaders...");
-
-    shaderPrograms[shader].shaderProgramId = LoadShaders(shaderPrograms[shader].shaderInfo);
-    RZ_TRACE("Ligar programa...");
-    glUseProgram(shaderPrograms[shader].shaderProgramId);
-
-    glm::mat4 modelMatrixRender = modelMatrix;
-
-    glDepthFunc(GL_LESS);
-    glEnable(GL_DEPTH_TEST);
-    float clearToThisDepth = 1.0f;
-
-    GLint vColorUniformLocation = glGetUniformLocation(shaderPrograms[shader].shaderProgramId
-        , "vColorUniform");
-
-    GLint vPV_matrixUniformLocation = glGetUniformLocation(shaderPrograms[shader].shaderProgramId
-        , "vPV_matrix");
-
-    GLint vModel_matrixUniformLocation = glGetUniformLocation(shaderPrograms[shader].shaderProgramId
-        , "vModel_matrix");
-
-    checkOGlErrors();
-
-    while (!glfwWindowShouldClose(renderInfo->window)) {
-       
-        glUniform4fv(vColorUniformLocation, 1, &renderInfo->colorForUniform.r);
-        glUniformMatrix4fv(vPV_matrixUniformLocation, 1, false, &camera.cameraProjection[0][0]);
-        glUniformMatrix4fv(vModel_matrixUniformLocation, 1, false, &modelMatrix[0][0]);
+        glUniform4fv(renderInfo->uniformLocations[vColorUniform], 1,
+            &renderInfo->colorForUniform.r);
+        glUniformMatrix4fv(renderInfo->uniformLocations[vPV_matrix], 1, 
+            false, &camera_ptr->cameraProjection[0][0]);
+        glUniformMatrix4fv(renderInfo->uniformLocations[vModel_matrix], 1, 
+            false, modelMatrixStart_ptr);
 
         if (renderInfo->shouldCull) {
             glEnable(GL_CULL_FACE);
@@ -202,24 +112,56 @@ int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4
 
         glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
         glClearBufferfv(GL_DEPTH, 0, &clearToThisDepth);
-        
+
         glBindVertexArray(renderInfo->VAO);
 
         glDrawArrays(renderInfo->modes[renderInfo->mode], 0, renderInfo->numVertices);
+
+        gz::startGuiFrame();
+        gz::showGuiWindows(renderInfo->clearColor);
+        gz::renderGui();
 
         glfwSwapBuffers(renderInfo->window);
 
         glfwPollEvents();
 
-        controlTest(&camera, renderInfo);
+        controlTest(camera_ptr, renderInfo);
     }
 
+    return keepRendering;
+}
+
+void setupRender(renderInfo_t* renderInfo, int shader) {
+    RZ_TRACE("Preparando para renderizar. Carregar shaders...");
+
+    shaderPrograms[shader].shaderProgramId = LoadShaders(shaderPrograms[shader].shaderInfo);
+
+    RZ_TRACE("Ligar programa...");
+    glUseProgram(shaderPrograms[shader].shaderProgramId);
+
+    RZ_TRACE("Ligar Depth Test...");
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+
+    RZ_TRACE("Setar localizacao Uniforms...");
+
+    renderInfo->uniformLocations[vColorUniform] = glGetUniformLocation(
+        shaderPrograms[shader].shaderProgramId
+        , "vColorUniform");
+
+    renderInfo->uniformLocations[vPV_matrix] = glGetUniformLocation(
+        shaderPrograms[shader].shaderProgramId
+        , "vPV_matrix");
+
+    renderInfo->uniformLocations[vModel_matrix] = glGetUniformLocation(
+        shaderPrograms[shader].shaderProgramId
+        , "vModel_matrix");
+
+    glfwSwapInterval(1);
+
+    RZ_TRACE("Pronto. Checando erros...");
+
     checkOGlErrors();
-
-    rz::terminate();
-    RZ_INFO("Janela Fechada");
-
-    return 0;
 }
 
 renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
@@ -343,4 +285,166 @@ void checkOGlErrors() {
 
     if (errorCount > 0) RZ_ERROR("\n\nOuveram erros de OpenGL desde a ultima checagem, veja codigos acima!\n\n");
     else RZ_INFO("\nNao houveram erros de OpenGL desde a ultima checagem : )\n");
+}
+
+
+///////////////////////////////////////////////
+///////////////////////////////////////////////
+//Other Rendering modes, to be cleaned up soon:
+///////////////////////////////////////////////
+
+int rz::renderTestLegacy() {
+
+    /* Render here */
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    /*Define triangle*/
+    glBegin(GL_TRIANGLES);
+    glVertex2f(-0.5f, -0.5f);
+    glVertex2f(0.0f, 0.5f);
+    glVertex2f(0.5f, -0.5f);
+    glEnd();
+
+    /* Swap front and back buffers */
+    glfwSwapBuffers(renderWindow.window);
+
+    /* Poll for and process events */
+    glfwPollEvents();
+
+    return !glfwWindowShouldClose(renderWindow.window);
+}
+
+int renderSimple(renderInfo_t renderInfo) {
+
+    RZ_INFO("Habilitando atributos vColor e vPosition...");
+
+    glEnableVertexAttribArray(vColor);
+    glEnableVertexAttribArray(vPosition);
+
+    RZ_INFO("Renderizar...");
+
+    while (!glfwWindowShouldClose(renderInfo.window))
+    {
+        glClearBufferfv(GL_COLOR, 0, renderInfo.clearColor);
+
+        glBindVertexArray(renderInfo.VAO);
+
+        glDrawArrays(renderInfo.mode, 0, renderInfo.numVertices);
+
+        glfwSwapBuffers(renderInfo.window);
+
+        glfwPollEvents();
+    }
+
+    RZ_INFO("Chega de triangulo...");
+
+    rz::terminate();
+
+    return 1;
+}
+
+int renderWithCamera(renderInfo_t* renderInfo, CameraZ camera
+    , void (*controlTestCamera) (CameraZ* camera)) {
+
+    RZ_INFO("Habilitando atributos vColor, vPosition e Matriz Projecao...");
+
+    glEnableVertexAttribArray(vColor);
+    glEnableVertexAttribArray(vPosition);
+
+    glm::int32_t projectionLocation = glGetUniformLocation(shaderPrograms[SIMPLE_CAMERA].shaderProgramId
+        , "vProjection");
+
+    printf("\t\tLocalizacao uniform projecao: %i\n", projectionLocation);
+
+    RZ_INFO("Renderizar...");
+
+    while (!glfwWindowShouldClose(renderInfo->window))
+    {
+        glUniformMatrix4fv(projectionLocation, 1, false, &camera.cameraProjection[0][0]);
+
+        glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
+
+        glBindVertexArray(renderInfo->VAO);
+
+        glDrawArrays(renderInfo->mode, 0, renderInfo->numVertices);
+
+        glfwSwapBuffers(renderInfo->window);
+
+        glfwPollEvents();
+
+        controlTestCamera(&camera);
+    }
+
+    RZ_INFO("Chega de triangulo...");
+
+    rz::terminate();
+
+    return 1;
+}
+
+int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4 modelMatrix
+    , int shader, void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr)) {
+    
+    RZ_TRACE("Preparando para renderizar. Carregar shaders...");
+
+    shaderPrograms[shader].shaderProgramId = LoadShaders(shaderPrograms[shader].shaderInfo);
+    RZ_TRACE("Ligar programa...");
+    glUseProgram(shaderPrograms[shader].shaderProgramId);
+
+    glm::mat4 modelMatrixRender = modelMatrix;
+
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+    float clearToThisDepth = 1.0f;
+
+    GLint vColorUniformLocation = glGetUniformLocation(shaderPrograms[shader].shaderProgramId
+        , "vColorUniform");
+
+    GLint vPV_matrixUniformLocation = glGetUniformLocation(shaderPrograms[shader].shaderProgramId
+        , "vPV_matrix");
+
+    GLint vModel_matrixUniformLocation = glGetUniformLocation(shaderPrograms[shader].shaderProgramId
+        , "vModel_matrix");
+
+    glfwSwapInterval(1);
+
+    checkOGlErrors();
+
+    while (!glfwWindowShouldClose(renderInfo->window)) {
+       
+        glUniform4fv(vColorUniformLocation, 1, &renderInfo->colorForUniform.r);
+        glUniformMatrix4fv(vPV_matrixUniformLocation, 1, false, &camera.cameraProjection[0][0]);
+        glUniformMatrix4fv(vModel_matrixUniformLocation, 1, false, &modelMatrix[0][0]);
+
+        if (renderInfo->shouldCull) {
+            glEnable(GL_CULL_FACE);
+            glCullFace(GL_BACK);
+            glFrontFace(renderInfo->faceDirectionForCulling);
+        }
+        else glDisable(GL_CULL_FACE);
+
+        glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
+        glClearBufferfv(GL_DEPTH, 0, &clearToThisDepth);
+        
+        glBindVertexArray(renderInfo->VAO);
+
+        glDrawArrays(renderInfo->modes[renderInfo->mode], 0, renderInfo->numVertices);
+
+        gz::startGuiFrame();
+        gz::showGuiWindows(renderInfo->clearColor);
+        gz::renderGui();
+
+        glfwSwapBuffers(renderInfo->window);
+
+        glfwPollEvents();
+
+        controlTest(&camera, renderInfo);
+    }
+
+    checkOGlErrors();
+
+    rz::terminate();
+    RZ_INFO("Janela Fechada");
+
+    return 0;
 }

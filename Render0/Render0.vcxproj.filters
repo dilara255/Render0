@@ -13,19 +13,67 @@
     <Filter Include="src">
       <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\imGui">
+      <UniqueIdentifier>{371E65B5-A388-192C-ECC6-CAD15870F780}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\imGui\backends">
+      <UniqueIdentifier>{4186E19F-2D6A-A2F5-96CA-9C4882CD8C77}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\RZ_API\RZ_api.hpp">
       <Filter>include\RZ_API</Filter>
     </ClInclude>
+    <ClInclude Include="include\input0.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render0\camera.hpp">
+      <Filter>include\render0</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render0\gui0.hpp">
+      <Filter>include\render0</Filter>
+    </ClInclude>
+    <ClInclude Include="include\render0\model0.hpp">
+      <Filter>include\render0</Filter>
+    </ClInclude>
     <ClInclude Include="include\render0\render0.hpp">
       <Filter>include\render0</Filter>
     </ClInclude>
-    <ClInclude Include="include\render0\camera.hpp" />
-    <ClInclude Include="include\input0.hpp" />
-    <ClInclude Include="include\render0\model0.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui0.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imGui\backends\imgui_impl_glfw.cpp">
+      <Filter>src\imGui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imGui\backends\imgui_impl_opengl3.cpp">
+      <Filter>src\imGui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imGui\imgui.cpp">
+      <Filter>src\imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imGui\imgui_draw.cpp">
+      <Filter>src\imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imGui\imgui_tables.cpp">
+      <Filter>src\imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\imGui\imgui_widgets.cpp">
+      <Filter>src\imGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\input0.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modelManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\modelRenderTest.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
     <ClCompile Include="src\render0.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -35,9 +83,5 @@
     <ClCompile Include="src\testTriangle.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\camera.cpp" />
-    <ClCompile Include="src\input0.cpp" />
-    <ClCompile Include="src\modelManager.cpp" />
-    <ClCompile Include="src\modelRenderTest.cpp" />
   </ItemGroup>
 </Project>

@@ -25,7 +25,10 @@ int rz::modelMaterialRenderTest(const char* modelFile) {
     renderInfo = setupRenderInfoCameraModelSimple(&cam, &testModel);
     static glm::mat4 modelMatrixMMTest = glm::mat4(1.0f); //centrando pela camera
     
-    return renderWithCameraAndModel(&renderInfo, cam, modelMatrixMMTest, SIMPLE_MVP, controlTest);
+    setupRender(&renderInfo, SIMPLE_MVP);
+    while(render(&renderInfo, &cam, &modelMatrixMMTest[0][0], controlTest));
+
+    return 1;
 }
 
 //criar funções e/ou macros pra toggle e testes na input

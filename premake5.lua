@@ -25,6 +25,8 @@ workspace "Render"
 	IncludeDir["GLM"]     = "%{wks.location}/Dependencies/glm/include"
 	IncludeDir["SPDLOG"]  = "%{wks.location}/Dependencies/spdlog/include"
 	IncludeDir["AUXAPIS"] = "%{wks.location}/Aux0/APIs"
+	IncludeDir["IMGUI"]   = "%{wks.location}/Dependencies/imGui"
+	IncludeDir["IMGUI_BK"]= "%{wks.location}/Dependencies/imGui/backends"
 	IncludeDir["RZAPIS"]  = "%{wks.location}/Render0/include/RZ_API"
 
 	LibDir = {}
@@ -71,6 +73,8 @@ project "Render0"
 		"%{prj.name}/include",
 		"%{IncludeDir.RZAPIS}",
 		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.IMGUI}",
+		"%{IncludeDir.IMGUI_BK}",
 		"%{IncludeDir.AUXAPIS}"
 	}
 
