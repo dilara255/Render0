@@ -51,7 +51,7 @@ typedef struct renderInfo_st {
     mz::ModelZ* model_ptr = (mz::ModelZ * )NULL;
     int modes[3] = { GL_TRIANGLES , GL_LINE_LOOP , GL_POINTS };
     int faceDirectionForCulling = GL_CW; //GL_CCW
-    bool shouldCull = false;
+    bool shouldCull = true;
     glm::vec4 colorForUniform = glm::vec4(0.55f, 0.1f, 0.85f, 1.f);
     GLint uniformLocations[NUMBER_UNIFORMS];
     windowParams_t windowParameters;

@@ -35,6 +35,19 @@ typedef struct cameraState_st {
 	glm::mat4 perspective;
 }cameraState_t;
 
+//////////////////////
+//Utilizar na CameraZ
+typedef struct renderArea_st {
+	int left;
+	int right;
+	int bottom;
+	int top;
+	int nearDist;
+	int farDist;
+} renderArea_t;
+//////////////////////
+
+
 class CameraZ {
 
 public:

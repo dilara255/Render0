@@ -204,6 +204,18 @@ ModelZ::ModelZ(const char* model3DMaxFile) {
 
 }
 
+void ModelZ::copyNTrianglesTo(int numberTriangles,
+	triangle_t* destinationTriangles_ptr) {
+
+	if (numberTriangles > this->model.numberTriangles) {
+		RZ_WARN("Algo pediu uma copia de mais triangulos do que o modelo tem!");
+		numberTriangles = this->model.numberTriangles;
+	}
+
+	memcpy((void*)destinationTriangles_ptr, (void*)&this->model.triangles,
+		numberTriangles * sizeof(triangle_t));
+}
+
 float ModelZ::getBoundingBoxDiagonal() {
 	return this->model.bBox.diagonal;
 }

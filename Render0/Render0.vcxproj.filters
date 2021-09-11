@@ -39,6 +39,7 @@
     <ClInclude Include="include\render0\render0.hpp">
       <Filter>include\render0</Filter>
     </ClInclude>
+    <ClInclude Include="include\render0\c2gl.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\camera.cpp">
@@ -84,5 +85,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\mainLoop.cpp" />
+    <ClCompile Include="src\c2gl.cpp" />
   </ItemGroup>
 </Project>

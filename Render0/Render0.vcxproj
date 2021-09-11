@@ -303,6 +303,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\render0\c2gl.hpp" />
     <ClInclude Include="include\RZ_API\RZ_api.hpp" />
     <ClInclude Include="include\input0.hpp" />
     <ClInclude Include="include\render0\camera.hpp" />
@@ -311,6 +312,7 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
     <ClInclude Include="include\render0\render0.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\c2gl.cpp" />
     <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\gui0.cpp" />
     <ClCompile Include="src\imGui\backends\imgui_impl_glfw.cpp" />

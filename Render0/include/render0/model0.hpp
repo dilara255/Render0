@@ -1,7 +1,7 @@
 #pragma once
 
 /*
-//Define estruturas e classe de modelo.
+//Declara estruturas e classe de modelo.
 //
 //Dados do modelo:
 //
@@ -65,6 +65,8 @@ namespace mz {
 		glm::vec4 getBoundingBoxCenter();
 		int ModelZ::getNumberTriangles();
 		int ModelZ::getNumberMaterials();
+		void ModelZ::copyNTrianglesTo(int numberTriangles, 
+			                          triangle_t* destinationTriangles_ptr);
 
 		glm::vec4* posBuffer;
 		glm::vec4* normBuffer;
