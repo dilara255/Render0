@@ -9,8 +9,8 @@ void mainLoop(renderInfo_t*  renderInfo_ptr, CameraZ* camera_ptr,
 	RZ_INFO("Iniciando loop principal");
 
 	while (keepRunning) {
-		keepRunning = render(renderInfo_ptr, camera_ptr, modelMatrixStart_ptr, controlTest);
-		glfwPollEvents();
+		keepRunning = renderOgl(renderInfo_ptr, camera_ptr, modelMatrixStart_ptr, controlTest);
+		iz::processInput();
 		controlTest(camera_ptr, renderInfo_ptr);
 	}
 

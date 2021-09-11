@@ -8,36 +8,43 @@
 #include "render0/camera.hpp"
 
 struct keyBinding { bool* input; int keyBound; };
-const int keysToBindKeyboard = 32;
+const int keysToBindKeyboard = 34;
+
+void iz::processInput() {
+	gz::updateStateFromGui();
+	glfwPollEvents();
+}
 
 keyBinding bindingsKeyboard[keysToBindKeyboard] = {
 
 	&keyboardInput.leftPressed		, GLFW_KEY_A,
-	&keyboardInput.rightPressed	, GLFW_KEY_D,
+	&keyboardInput.rightPressed	    , GLFW_KEY_D,
 	&keyboardInput.upPressed	    , GLFW_KEY_W,
 	&keyboardInput.downPressed	    , GLFW_KEY_S,
 	&keyboardInput.forwardPressed	, GLFW_KEY_UP,
 	&keyboardInput.backwardPressed	, GLFW_KEY_DOWN,
 
 	&keyboardInput.pitchDownPressed    , GLFW_KEY_U,
-	&keyboardInput.pitchUpPressed    , GLFW_KEY_I,
+	&keyboardInput.pitchUpPressed      , GLFW_KEY_I,
 	&keyboardInput.yawLeftPressed      , GLFW_KEY_H,
-	&keyboardInput.yawRightPressed      , GLFW_KEY_J,
-	&keyboardInput.rollCWPressed     , GLFW_KEY_L,
-	&keyboardInput.rollCCWPressed     , GLFW_KEY_K,
+	&keyboardInput.yawRightPressed     , GLFW_KEY_J,
+	&keyboardInput.rollCWPressed       , GLFW_KEY_L,
+	&keyboardInput.rollCCWPressed      , GLFW_KEY_K,
 
 	&keyboardInput.increaseFOVPressed	, GLFW_KEY_PAGE_UP,
 	&keyboardInput.decreaseFOVPressed	, GLFW_KEY_PAGE_DOWN,
 
-	&keyboardInput.increaseNear	, GLFW_KEY_KP_MULTIPLY,
-	&keyboardInput.decreaseNear	, GLFW_KEY_KP_DIVIDE,
+	&keyboardInput.increaseNear	    , GLFW_KEY_KP_MULTIPLY,
+	&keyboardInput.decreaseNear	    , GLFW_KEY_KP_DIVIDE,
 	&keyboardInput.increaseFar	    , GLFW_KEY_KP_ADD,
 	&keyboardInput.decreaseFar	    , GLFW_KEY_KP_SUBTRACT,
 
 	&keyboardInput.toggleMoveCameraOrWorldCoords	, GLFW_KEY_C,
 	&keyboardInput.toggleLookatPressed	            , GLFW_KEY_T,
 	&keyboardInput.toggleOrthoPerspectivePressed	, GLFW_KEY_P,
-	&keyboardInput.resetViewPressed	            , GLFW_KEY_R,
+	&keyboardInput.resetViewPressed	                , GLFW_KEY_R,
+	&keyboardInput.toggleOglCtgl	                , GLFW_KEY_KP_2,
+	&keyboardInput.toggleVsync	                    , GLFW_KEY_V,
 
 	&keyboardInput.increaseR	, GLFW_KEY_KP_7,
 	&keyboardInput.increaseG	, GLFW_KEY_KP_8,

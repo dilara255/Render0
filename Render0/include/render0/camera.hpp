@@ -9,6 +9,7 @@
 
 #define DEFAULT_WIDTH (640)
 #define DEFAULT_HEIGHT (480)
+#define DEFAULT_GUI_WIDTH (360)
 
 inline glm::float32 screenRatio;
 

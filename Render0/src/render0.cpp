@@ -37,9 +37,10 @@ namespace rz {
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        //glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
 
-        renderWindow.window = glfwCreateWindow(renderWindow.width, renderWindow.height
-            , renderWindow.title, NULL, NULL);
+        renderWindow.window = glfwCreateWindow(renderWindow.width + renderWindow.guiWidth, 
+            renderWindow.height, renderWindow.title, NULL, NULL);
         if (!renderWindow.window)
         {
             RZ_ERROR("Nao conseguiu obter janela");
@@ -67,10 +68,6 @@ namespace rz {
 
         iz::init(renderWindow.window);
 
-        RZ_TRACE("Iniciando imGui..");
-
-        gz::init(renderWindow.window);
-
         RZ_INFO("\n\nPronto!");
 
         return 1;
@@ -81,9 +78,13 @@ namespace rz {
         glfwTerminate();
         RZ_TRACE("GLFW fechado");
     }
+
+    void setSwapInterval(int interval) {
+        glfwSwapInterval(interval);
+    }
 }
 
-bool render(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
+bool renderOgl(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
             void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr)) {
     
     static float clearToThisDepth = 1.0f;
@@ -111,7 +112,7 @@ bool render(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatri
     glDrawArrays(renderInfo_ptr->modes[renderInfo_ptr->mode], 0, renderInfo_ptr->numVertices);
 
     gz::startGuiFrame();
-    gz::showGuiWindows(renderInfo_ptr->clearColor);
+    gz::showGuiWindows();
     gz::renderGui();
 
     glfwSwapBuffers(renderInfo_ptr->window);
@@ -123,9 +124,10 @@ bool render(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatri
     return keepRendering;
 }
 
-void setupRender(renderInfo_t* renderInfo, int shader) {
+void setupRender(renderInfo_t* renderInfo) {
     RZ_TRACE("Preparando para renderizar. Carregar shaders...");
 
+    int shader = renderInfo->shadingToUse;
     shaderPrograms[shader].shaderProgramId = LoadShaders(shaderPrograms[shader].shaderInfo);
 
     RZ_TRACE("Ligar programa...");
@@ -149,8 +151,12 @@ void setupRender(renderInfo_t* renderInfo, int shader) {
         shaderPrograms[shader].shaderProgramId
         , "vModel_matrix");
 
-    glfwSwapInterval(1);
+    RZ_TRACE("Setar vsync e tamanho de area de renderizacao...");
 
+    glfwSwapInterval(renderInfo->swapInterval);
+
+    glViewport(0, 0, renderInfo->windowParameters.width, renderInfo->windowParameters.height);
+        
     RZ_TRACE("Pronto. Checando erros...");
 
     checkOGlErrors();
@@ -423,7 +429,7 @@ int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4
         glDrawArrays(renderInfo->modes[renderInfo->mode], 0, renderInfo->numVertices);
 
         gz::startGuiFrame();
-        gz::showGuiWindows(renderInfo->clearColor);
+        gz::showGuiWindows();
         gz::renderGui();
 
         glfwSwapBuffers(renderInfo->window);

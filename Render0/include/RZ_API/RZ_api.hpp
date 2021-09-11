@@ -7,6 +7,9 @@
 
 typedef struct renderInfo_st renderInfo_t;
 
+#define MIN_NEAR (0.005f)
+#define MAX_FAR (15000.f)
+
 namespace rz {
 
 	RZ_API int init(void);
@@ -15,6 +18,7 @@ namespace rz {
 	RZ_API int testTriangleWithCamera(void);
 	RZ_API int modelMaterialRenderTest(const char* modelFile);
 	RZ_API void terminate(void);
+	RZ_API void setSwapInterval(int interval);
 
 	inline const char* glsl_version = "#version 330";
 	typedef float colorf_t[4];

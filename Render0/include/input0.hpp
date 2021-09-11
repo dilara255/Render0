@@ -6,29 +6,32 @@
 #include <GLFW/glfw3.h>
 #include "logAPI.hpp"
 
+#include "render0/gui0.hpp"
+
 namespace iz {
 	int init(GLFWwindow* window);
+	void processInput();
 
 	typedef struct inputGiven_st {
-		bool leftPressed = false;
-		bool rightPressed = false;
-		bool upPressed = false;
-		bool downPressed = false;
-		bool forwardPressed = false;
+		bool leftPressed     = false;
+		bool rightPressed    = false;
+		bool upPressed       = false;
+		bool downPressed     = false;
+		bool forwardPressed  = false;
 		bool backwardPressed = false;
 
 		bool toggleOrthoPerspectivePressed = false;
-		bool toggleLookatPressed = false;
+		bool toggleLookatPressed           = false;
 		bool toggleMoveCameraOrWorldCoords = false;
 
 		bool resetViewPressed = false;
 
 		bool increaseFOVPressed = false;
 		bool decreaseFOVPressed = false;
-		bool increaseNear = false;
-		bool decreaseNear = false;
-		bool increaseFar = false;
-		bool decreaseFar = false;
+		bool increaseNear       = false;
+		bool decreaseNear       = false;
+		bool increaseFar        = false;
+		bool decreaseFar        = false;
 
 		bool increaseR = false;
 		bool increaseG = false;
@@ -40,15 +43,17 @@ namespace iz {
 		bool cycleDrawModePressed = false;
 		bool toggleCullingPressed = false;
 		bool toggleCCWtoCWPressed = false;
+		bool toggleOglCtgl        = false;
+		bool toggleVsync          = false;
 
 		bool closeWindowPressed = false;
 
 		bool pitchDownPressed = false;
-		bool pitchUpPressed = false;
-		bool yawLeftPressed = false;
-		bool yawRightPressed = false;
-		bool rollCWPressed = false;
-		bool rollCCWPressed = false;
+		bool pitchUpPressed   = false;
+		bool yawLeftPressed   = false;
+		bool yawRightPressed  = false;
+		bool rollCWPressed    = false;
+		bool rollCCWPressed   = false;
 	} inputGiven_t;
 }
 

@@ -38,6 +38,7 @@ typedef struct windowParams_st {
     int width = DEFAULT_WIDTH;
     int height = DEFAULT_HEIGHT;
     const char* title = "Viewer0 " SYSTEM_NAME "-" PLATFORM_NAME " " CONFIG_NAME;
+    int guiWidth = DEFAULT_GUI_WIDTH;
 } windowParams_t;
 
 typedef struct renderInfo_st {
@@ -53,6 +54,11 @@ typedef struct renderInfo_st {
     bool shouldCull = false;
     glm::vec4 colorForUniform = glm::vec4(0.55f, 0.1f, 0.85f, 1.f);
     GLint uniformLocations[NUMBER_UNIFORMS];
+    windowParams_t windowParameters;
+    //provavelmente seja melhor criar um estado de render eventualmente
+    int swapInterval = 0;
+    float frameTimeMS = 1;
+    int shadingToUse = SIMPLE_MVP;
 } renderInfo_t;
 
 typedef struct vertexDataCP_st {
@@ -91,8 +97,8 @@ GLuint LoadShaders(shaderInfo_t* shaders);
 void initShaderPrograms();
 renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* model_ptr);
 
-void setupRender(renderInfo_t* renderInfo, int shader);
-bool render(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
+void setupRender(renderInfo_t* renderInfo);
+bool renderOgl(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
             void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr));
 
 void mainLoop(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr,

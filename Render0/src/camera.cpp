@@ -8,9 +8,6 @@
 #include "render0/camera.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-#define MIN_NEAR (0.005f)
-#define MAX_FAR (15000.f)
-
 CameraZ::CameraZ(cameraState_t initialState) {
 	this->state.lookAtActive = initialState.lookAtActive;
 	this->state.perspectiveOn = initialState.perspectiveOn;

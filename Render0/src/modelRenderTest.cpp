@@ -4,6 +4,7 @@
 #include "render0/model0.hpp"
 #include "render0/render0.hpp"
 #include "render0/camera.hpp"
+#include "render0/gui0.hpp"
 
 #include "RZ_api.hpp"
 
@@ -20,12 +21,13 @@ int rz::modelMaterialRenderTest(const char* modelFile) {
 	
 	static mz::ModelZ testModel(modelFile);
     CameraZ cam = CameraZ::getCameraCenteredOnModel(&testModel, testModel.getCopyBoundingBox(),
-        true, true, 60.f, -0.1f, -5000);
+        true, true, 60.f, -1.f, -5000.f);
         
     renderInfo = setupRenderInfoCameraModelSimple(&cam, &testModel);
     static glm::mat4 modelMatrixMMTest = glm::mat4(1.0f); //centrando pela camera
     
-    setupRender(&renderInfo, SIMPLE_MVP);
+    gz::init(renderInfo.window, &renderInfo, &cam);
+    setupRender(&renderInfo);
     mainLoop(&renderInfo, &cam, &modelMatrixMMTest[0][0], controlTest);
 
     checkOGlErrors();
@@ -42,12 +44,15 @@ void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
     //sinais de controle definidos em input.hpp e input.cpp
     //testa sinais e faz funcionar input, em especial controle de camera
 
-    float basePosStepSize = 0.025f;
-    float constexpr rotStepSize = glm::radians(1.8f);
-    float fovStepSize = 0.025f;
-    float baseFarStepSize = 0.35f;
-    float baseNearStepSize = 0.1f;
-    float colorStep = 0.01f;
+    float deltaT = renderInfo_ptr->frameTimeMS/1000.f;
+
+    float basePosStepSize = 1.5f * deltaT;
+    float constexpr rotStepSizeRad = glm::radians(50.f);
+    float rotStepSize = rotStepSizeRad * deltaT;
+    float fovStepSize = 1.5f * deltaT;
+    float baseFarStepSize = 20.f * deltaT;
+    float baseNearStepSize = 6.f * deltaT;
+    float colorStep = 0.6f * deltaT;
 
     bool hasToUpdate = false;
 
@@ -60,6 +65,7 @@ void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
     static bool blockCycleDrawMode = false;
     static bool blockToogleCulling = false;
     static bool blockToogleCCWtoCW = false;
+    static bool blockToogleVsync   = false;
     //^usadas para evitar de ficar ativando várias vezes enquanto se aperta o botão
 
     glm::vec3 translationCameraCoordinates(0, 0, 0);
@@ -84,6 +90,19 @@ void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
     if (keyboardInput.closeWindowPressed) {
         glfwSetWindowShouldClose(renderInfo_ptr->window, GL_TRUE);
     }
+
+    if (keyboardInput.toggleVsync) {
+        if (!blockToogleVsync) {
+            renderInfo_ptr->swapInterval = 1 - renderInfo_ptr->swapInterval;
+            rz::setSwapInterval(renderInfo_ptr->swapInterval);
+
+            blockToogleVsync = true;
+
+            if (renderInfo_ptr->swapInterval) RZ_TRACE("Vsync ativado");
+            else RZ_TRACE("Vsync desativado");
+        }
+    }
+    else blockToogleVsync = false;
 
     if (keyboardInput.toggleCullingPressed) {
         if (!blockToogleCulling) {
@@ -201,63 +220,33 @@ void controlTest(CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr) {
         renderInfo_ptr->colorForUniform.r += colorStep;
         if (renderInfo_ptr->colorForUniform.r > 1)
             renderInfo_ptr->colorForUniform.r -= 1;
-        /*
-        renderInfo_ptr->clearColor[0] += colorStep;
-        if (renderInfo_ptr->clearColor[0] > 1)
-            renderInfo_ptr->clearColor[0] -= 1;
-        */
     }
     if (keyboardInput.decreaseR) {
         renderInfo_ptr->colorForUniform.r -= colorStep;
         if (renderInfo_ptr->colorForUniform.r < 0)
             renderInfo_ptr->colorForUniform.r += 1;
-        /*
-        renderInfo_ptr->clearColor[0] -= colorStep;
-        if (renderInfo_ptr->clearColor[0] < 0)
-            renderInfo_ptr->clearColor[0] += 1;
-        */
     }
 
     if (keyboardInput.increaseG) {
         renderInfo_ptr->colorForUniform.g += colorStep;
         if (renderInfo_ptr->colorForUniform.g > 1)
             renderInfo_ptr->colorForUniform.g -= 1;
-        /* 
-        renderInfo_ptr->clearColor[1] += colorStep;
-        if (renderInfo_ptr->clearColor[1] > 1)
-            renderInfo_ptr->clearColor[1] -= 1;
-        */
     }
     if (keyboardInput.decreaseG) {
         renderInfo_ptr->colorForUniform.g -= colorStep;
         if (renderInfo_ptr->colorForUniform.g < 0)
             renderInfo_ptr->colorForUniform.g += 1;
-        /*
-        renderInfo_ptr->clearColor[1] -= colorStep;
-        if (renderInfo_ptr->clearColor[1] < 0)
-            renderInfo_ptr->clearColor[1] += 1;
-        */
     }
 
     if (keyboardInput.increaseB) {
         renderInfo_ptr->colorForUniform.b += colorStep;
         if (renderInfo_ptr->colorForUniform.b > 1)
             renderInfo_ptr->colorForUniform.b -= 1;
-        /*
-        renderInfo_ptr->clearColor[2] += colorStep;
-        if (renderInfo_ptr->clearColor[2] > 1)
-            renderInfo_ptr->clearColor[2] -= 1;
-        */
     }
     if (keyboardInput.decreaseB) {
         renderInfo_ptr->colorForUniform.b -= colorStep;
         if (renderInfo_ptr->colorForUniform.b < 0)
             renderInfo_ptr->colorForUniform.b += 1;
-        /*
-        renderInfo_ptr->clearColor[2] -= colorStep;
-        if (renderInfo_ptr->clearColor[2] < 0)
-            renderInfo_ptr->clearColor[2] += 1;
-        */
     }
 
     if (keyboardInput.cycleDrawModePressed) {
