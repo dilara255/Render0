@@ -65,12 +65,18 @@ namespace mz {
 		glm::vec4 getBoundingBoxCenter();
 		int ModelZ::getNumberTriangles();
 		int ModelZ::getNumberMaterials();
+		
+		void ModelZ::copyPosBufferTo(int numberTriangles, glm::vec4* destinationTriangles_ptr);
+		void ModelZ::copyNormBufferTo(int numberTriangles, glm::vec4* destinationTriangles_ptr);
+		void ModelZ::copyFaceNormalsTo(int numberTriangles, glm::vec4* destinationTriangles_ptr);
 		void ModelZ::copyNTrianglesTo(int numberTriangles, 
 			                          triangle_t* destinationTriangles_ptr);
+		
+		void ModelZ::copyPosBufferFrom(int numberTriangles, glm::vec4* sourceTriangles_ptr);
+		void ModelZ::copyNormBufferFrom(int numberTriangles, glm::vec4* sourceTriangles_ptr);
 		void ModelZ::copyNTrianglesFrom(int numberTriangles,
 										triangle_t* sourceTriangles_ptr);
-
-
+	
 		glm::vec4* posBuffer;
 		glm::vec4* normBuffer;
 		glm::vec4* ambientBuffer;

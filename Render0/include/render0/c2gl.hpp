@@ -38,13 +38,20 @@ namespace c2gl {
 
 	typedef struct c2glModelInfo_st {
 		mz::ModelZ* originalModel_ptr;
-		mz::triangle_t* originalTringlesArray;
-		mz::triangle_t* transformedTringlesArray;
+
+		glm::vec4* originalPositions;
+		glm::vec4* originalNormals;
+		glm::vec4* originalFaceNormals;
+		glm::vec4* transformedPositions;
+		glm::vec4* transformedNormals;
+		glm::vec4* transformedFaceNormals;
+
 		int numberTriangles;
 		int numberCurrentlyVisibleTriangles;
 	} c2glModelInfo_t;
 
 	static c2glModelInfo_t modelInfo;
+
 	c2glModelInfo_t* initModelInfo(mz::ModelZ* originalModel_ptr);
 
 	glm::mat4 perspectiveProjection(float fovVert, float fovHor,

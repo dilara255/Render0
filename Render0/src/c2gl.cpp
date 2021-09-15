@@ -9,21 +9,38 @@ namespace c2gl {
 		modelInfo.numberTriangles = originalModel_ptr->getNumberTriangles();
 		modelInfo.numberCurrentlyVisibleTriangles = modelInfo.numberTriangles;
 
-		int sizeTrianglesArray = modelInfo.numberTriangles * sizeof(mz::triangle_t);
-
 		RZ_TRACE("Alocando memoria...");
 
-		modelInfo.originalTringlesArray = (mz::triangle_t*)malloc(sizeTrianglesArray);
-		modelInfo.transformedTringlesArray = (mz::triangle_t*)malloc(sizeTrianglesArray);
+		int sizeArraysPosAndNormal = modelInfo.numberTriangles * 3 * sizeof(glm::vec4);
+
+		modelInfo.originalPositions = (glm::vec4*)malloc(sizeArraysPosAndNormal);
+		modelInfo.originalNormals = (glm::vec4*)malloc(sizeArraysPosAndNormal);
+		modelInfo.transformedPositions = (glm::vec4*)malloc(sizeArraysPosAndNormal);
+		modelInfo.transformedNormals = (glm::vec4*)malloc(sizeArraysPosAndNormal);
+
+		int sizeArrayFaceNormals = modelInfo.numberTriangles * sizeof(glm::vec4);
+		modelInfo.originalFaceNormals = (glm::vec4*)malloc(sizeArrayFaceNormals);
+		modelInfo.transformedFaceNormals = (glm::vec4*)malloc(sizeArrayFaceNormals);
 		
 		RZ_TRACE("Copiando informacoes de posicao e normal...");
-		originalModel_ptr->copyNTrianglesTo(modelInfo.numberTriangles, 
-			                                modelInfo.originalTringlesArray);
+		originalModel_ptr->copyPosBufferTo(modelInfo.numberTriangles,
+			                               modelInfo.originalPositions);
+		originalModel_ptr->copyNormBufferTo(modelInfo.numberTriangles,
+										   modelInfo.originalNormals);
+	
+		originalModel_ptr->copyFaceNormalsTo(modelInfo.numberTriangles,
+			                                 modelInfo.originalFaceNormals);
+		
 		RZ_TRACE("fazendo segunda copia, para transformacao...");
-		originalModel_ptr->copyNTrianglesTo(modelInfo.numberTriangles,
-										    modelInfo.transformedTringlesArray);
-
-		RZ_TRACE("Atualizando numero de triangulos...");
+		originalModel_ptr->copyPosBufferTo(modelInfo.numberTriangles,
+									       modelInfo.transformedPositions);
+		originalModel_ptr->copyNormBufferTo(modelInfo.numberTriangles,
+										   modelInfo.transformedNormals);
+		
+		originalModel_ptr->copyFaceNormalsTo(modelInfo.numberTriangles,
+										     modelInfo.transformedFaceNormals);
+		
+		RZ_TRACE("Reiniciando numero de triangulos visiveis...");
 		modelInfo.numberCurrentlyVisibleTriangles = modelInfo.numberTriangles;
 
 		RZ_INFO("Dados copiados e memoria para manipulacao reservada");
@@ -55,14 +72,26 @@ namespace c2gl {
 		glm::mat4 MVP = viewProjMatrix * modelMatrix;
 
 		for (int i = 0; i < modelInfo.numberTriangles; i++) {
-			modelInfo.transformedTringlesArray[i].faceNormal =
-				MVP * modelInfo.originalTringlesArray[i].faceNormal;
+			modelInfo.transformedFaceNormals[i] =
+				MVP * modelInfo.originalFaceNormals[i];
 
 			for (int j = 0; j < 3; j++) {
-				modelInfo.transformedTringlesArray[i].vertexes[j].position =
-					MVP * modelInfo.originalTringlesArray[i].vertexes[j].position;
+				int index = (3 * i) + j;
+
+				modelInfo.transformedPositions[index] =
+					MVP * modelInfo.originalPositions[index];
 			}
 		}
+	}
+
+	bool isOutsideNearFar(renderArea_t renderArea, float z) {
+		
+		bool shouldCut = false;
+
+		shouldCut |= (renderArea.nearDist > z );
+		shouldCut |= (renderArea.farDist < z);
+
+		return shouldCut;
 	}
 
 	void applyClippingOnZ(renderArea_t renderArea) {
@@ -73,10 +102,9 @@ namespace c2gl {
 			bool shouldCut = false;
 
 			for (int j = 0; j < 3; j++) {
-				shouldCut |= (renderArea.nearDist > 
-						      modelInfo.transformedTringlesArray[i].vertexes[j].position.z);
-				shouldCut |= (renderArea.farDist <
-					          modelInfo.transformedTringlesArray[i].vertexes[j].position.z);
+				int index = (3 * i) + j;
+
+				shouldCut |= isOutsideNearFar(renderArea, modelInfo.transformedPositions[index].z);
 			}
 
 			int cutCount = 0;
@@ -86,14 +114,14 @@ namespace c2gl {
 
 				shouldCut = false;
 				for (int j = 0; j < 3; j++) {
-					shouldCut |= (renderArea.nearDist >
-						modelInfo.transformedTringlesArray[i+ cutCount].vertexes[j].position.z);
-					shouldCut |= (renderArea.farDist <
-						modelInfo.transformedTringlesArray[i+ cutCount].vertexes[j].position.z);
+					int index = ( 3 * (i + cutCount) ) + j;
+
+					shouldCut |= isOutsideNearFar(renderArea, modelInfo.transformedPositions[index].z);
 				}
 			}
 
-			modelInfo.transformedTringlesArray[i] = modelInfo.transformedTringlesArray[i + cutCount];
+			modelInfo.transformedPositions[i] = modelInfo.transformedPositions[i + cutCount];
+			modelInfo.transformedNormals[i] = modelInfo.transformedNormals[i + cutCount];
 			modelInfo.numberCurrentlyVisibleTriangles -= cutCount;
 
 			i += cutCount;
@@ -103,8 +131,10 @@ namespace c2gl {
 	void applyPerspectiveDivision() {
 		for (int i = 0; i < modelInfo.numberCurrentlyVisibleTriangles; i++) {
 			for (int j = 0; j < 3; j++) {
-				modelInfo.transformedTringlesArray[i].vertexes[j].position /=
-					modelInfo.transformedTringlesArray[i].vertexes[j].position.w;
+				int index = (3 * i) + j;
+
+				modelInfo.transformedPositions[index] /=
+					modelInfo.transformedPositions[index].w;
 			}
 		}
 	}

@@ -204,6 +204,50 @@ ModelZ::ModelZ(const char* model3DMaxFile) {
 
 }
 
+//tem certa repetição auqi né
+void ModelZ::copyPosBufferTo(int numberTriangles, glm::vec4* destinationTriangles_ptr) {
+
+	if (numberTriangles != this->model.numberTriangles) {
+		RZ_WARN("Algo pediu uma copia de um numero de triangulos diferente do esperado!");
+		if (numberTriangles > this->model.numberTriangles) {
+			numberTriangles = this->model.numberTriangles;
+		}
+	}
+
+	int size = numberTriangles * 3 * sizeof(glm::vec4);
+
+	memcpy((void*)destinationTriangles_ptr, (void*)this->posBuffer, size);
+}
+
+void ModelZ::copyNormBufferTo(int numberTriangles, glm::vec4* destinationTriangles_ptr) {
+
+	if (numberTriangles != this->model.numberTriangles) {
+		RZ_WARN("Algo pediu uma copia de um numero de triangulos diferente do esperado!");
+		if (numberTriangles > this->model.numberTriangles) {
+			numberTriangles = this->model.numberTriangles;
+		}
+	}
+
+	int size = numberTriangles * 3 * sizeof(glm::vec4);
+
+	memcpy((void*)destinationTriangles_ptr, (void*)this->normBuffer, size);
+}
+
+void ModelZ::copyFaceNormalsTo(int numberTriangles, glm::vec4* destinationTriangles_ptr) {
+
+	if (numberTriangles != this->model.numberTriangles) {
+		RZ_WARN("Algo pediu uma copia de um numero de triangulos diferente do esperado!");
+		if (numberTriangles > this->model.numberTriangles) {
+			numberTriangles = this->model.numberTriangles;
+		}
+	}
+
+	for (int i = 0; i < numberTriangles; i++) {
+		destinationTriangles_ptr[i] = this->model.triangles->faceNormal;
+	}
+}
+
+
 void ModelZ::copyNTrianglesTo(int numberTriangles,
 							  triangle_t* destinationTriangles_ptr) {
 
@@ -215,6 +259,30 @@ void ModelZ::copyNTrianglesTo(int numberTriangles,
 	int size = numberTriangles * sizeof(triangle_t);
 	
 	memcpy((void*)destinationTriangles_ptr, (void*)this->model.triangles, size);
+}
+
+void ModelZ::copyPosBufferFrom(int numberTriangles, glm::vec4* sourceTriangles_ptr) {
+
+	if (numberTriangles > this->model.numberTriangles) {
+		RZ_WARN("Algo tentou entregar mais triangulos do que o modelo original tem!");
+		numberTriangles = this->model.numberTriangles;
+	}
+
+	int size = numberTriangles * 3 * sizeof(glm::vec4);
+
+	memcpy((void*)this->posBuffer, (void*)sourceTriangles_ptr, size);
+}
+
+void ModelZ::copyNormBufferFrom(int numberTriangles, glm::vec4* sourceTriangles_ptr) {
+
+	if (numberTriangles > this->model.numberTriangles) {
+		RZ_WARN("Algo tentou entregar mais triangulos do que o modelo original tem!");
+		numberTriangles = this->model.numberTriangles;
+	}
+
+	int size = numberTriangles * 3 * sizeof(glm::vec4);
+
+	memcpy((void*)this->normBuffer, (void*)sourceTriangles_ptr, size);
 }
 
 void ModelZ::copyNTrianglesFrom(int numberTriangles,
