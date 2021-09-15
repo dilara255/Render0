@@ -327,7 +327,6 @@ IF EXIST $(ProjectDir)\src\shaders\ (xcopy /Q /E /Y /I $(ProjectDir)\src\shaders
     <ClCompile Include="src\modelRenderTest.cpp" />
     <ClCompile Include="src\render0.cpp" />
     <ClCompile Include="src\shaderManager.cpp" />
-    <ClCompile Include="src\testTriangle.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

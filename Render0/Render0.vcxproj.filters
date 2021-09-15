@@ -81,9 +81,6 @@
     <ClCompile Include="src\shaderManager.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\testTriangle.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\mainLoop.cpp" />
     <ClCompile Include="src\c2gl.cpp" />
   </ItemGroup>

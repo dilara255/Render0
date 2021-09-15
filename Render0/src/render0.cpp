@@ -84,7 +84,7 @@ namespace rz {
     }
 }
 
-bool renderOgl(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
+bool render(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
             void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr)) {
     
     static float clearToThisDepth = 1.0f;
@@ -107,7 +107,7 @@ bool renderOgl(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMa
     glClearBufferfv(GL_COLOR, 0, renderInfo_ptr->clearColor);
     glClearBufferfv(GL_DEPTH, 0, &clearToThisDepth);
 
-    glBindVertexArray(renderInfo_ptr->VAO);
+    glBindVertexArray(renderInfo_ptr->VAOs[Triangles]);
 
     glDrawArrays(renderInfo_ptr->modes[renderInfo_ptr->mode], 0, renderInfo_ptr->numVertices);
 
@@ -164,25 +164,38 @@ void setupRender(renderInfo_t* renderInfo) {
 
 renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* model_ptr) {
 
-    RZ_TRACE("Renderizar modelo lido de arquivo com material...");
-
-    GLuint  VAOs[NumVAOs];
-    GLuint  Buffers[NumBuffersWithModels]; //NumBuffersWithModels //AQUI
+    RZ_TRACE("Renderizar modelo lido de arquivo com material... checando quantidade de triangulos e materiais...");
 
     int numTriangles = model_ptr->getNumberTriangles();
     int numMaterials = model_ptr->getNumberMaterials();
 
     GLuint  numVertices = 3 * numTriangles;
 
+    RZ_TRACE("Definindo cor de fundo/clear e criando estruto de infos para renderizar...");
+
+    const rz::colorf_t black = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+    renderInfo_t renderInfo = {
+        black[0],
+        black[1],
+        black[2],
+        black[3],
+        numVertices,
+        renderWindow.window,
+        0,
+        camera_ptr,
+        model_ptr
+    };
+
     RZ_TRACE("Gerando vertex array e buffers...");
 
-    glGenVertexArrays(NumVAOs, VAOs);
-    glBindVertexArray(VAOs[Triangles]);
-    glGenBuffers(NumBuffersWithModels, Buffers); //AQUI
+    glGenVertexArrays(NumVAOs, renderInfo.VAOs);
+    glBindVertexArray(renderInfo.VAOs[Triangles]);
+    glGenBuffers(NumBuffersWithModels, renderInfo.Buffers);
 
     RZ_TRACE("Preparando Buffer Posicao...");
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[PosBuffer]);
+    glBindBuffer(GL_ARRAY_BUFFER, renderInfo.Buffers[PosBuffer]);
     glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
         , model_ptr->posBuffer
         , GL_STATIC_DRAW);
@@ -190,21 +203,19 @@ renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* m
     glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(vPosition);
 
-    //AQUI
-    RZ_TRACE("Preparando Buffer Cor Difusa...");
+        RZ_TRACE("Preparando Buffer Cor Difusa...");
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[DiffuseBuffer]);
+    glBindBuffer(GL_ARRAY_BUFFER, renderInfo.Buffers[DiffuseBuffer]);
     glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
         , model_ptr->diffuseBuffer
         , GL_STATIC_DRAW);
 
     glVertexAttribPointer(vColor, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(vColor);
-    //AQUI
-
+    
     RZ_TRACE("Preparando Buffer Normal...");
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[NormBuffer]);
+    glBindBuffer(GL_ARRAY_BUFFER, renderInfo.Buffers[NormBuffer]);
     glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
         , model_ptr->normBuffer
         , GL_STATIC_DRAW);
@@ -212,10 +223,9 @@ renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* m
     glVertexAttribPointer(vNormal, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(vNormal);
 
-    //AQUI
     RZ_TRACE("Preparando Buffer Ambiente...");
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[AmbientBuffer]);
+    glBindBuffer(GL_ARRAY_BUFFER, renderInfo.Buffers[AmbientBuffer]);
     glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
         , model_ptr->ambientBuffer
         , GL_STATIC_DRAW);
@@ -225,7 +235,7 @@ renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* m
 
     RZ_TRACE("Preparando Buffer Especular...");
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[SpecularBuffer]);
+    glBindBuffer(GL_ARRAY_BUFFER, renderInfo.Buffers[SpecularBuffer]);
     glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(glm::vec4)
         , model_ptr->specularBuffer
         , GL_STATIC_DRAW);
@@ -235,33 +245,70 @@ renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* m
 
     RZ_TRACE("Preparando Buffer Coef Brilho Especular...");
 
-    glBindBuffer(GL_ARRAY_BUFFER, Buffers[SpcCoefBuffer]);
+    glBindBuffer(GL_ARRAY_BUFFER, renderInfo.Buffers[SpcCoefBuffer]);
     glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(float)
         , model_ptr->spcShineCoefBuffer
         , GL_STATIC_DRAW);
 
     glVertexAttribPointer(vSpcCoef, 1, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
     glEnableVertexAttribArray(vSpcCoef);
-    //AQUI
+    
+    RZ_TRACE("Copiando dados para estrututo de informacoes do modelo...");
 
-    RZ_TRACE("Pronto. Definindo cor de fundo/clear e juntando as infos pra renderizar...");
-
-    const rz::colorf_t black = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-    renderInfo_t renderInfo = {
-        black[0],
-        black[1],
-        black[2],
-        black[3],
-        VAOs[Triangles],
-        numVertices,
-        renderWindow.window,
-        0,
-        camera_ptr,
-        model_ptr
-    };
+    renderInfo.modelInfo_ptr = c2gl::initModelInfo(model_ptr);
+       
+    RZ_INFO("Informacoes para Render inicializadas.");
 
     return renderInfo;
+}
+
+void updateWhichTrianglesToRender(renderInfo_t* renderInfo_ptr) {
+    RZ_TRACE("Atualizando informacao de triangulos...");
+
+    c2gl::c2glModelInfo_t* modelInfo_ptr = renderInfo_ptr->modelInfo_ptr;
+
+    if (renderInfo_ptr->useOgl) {
+              
+        RZ_TRACE("para usar openGL... \n-> copiando triangulos para o buffer para OGL:");
+        renderInfo_ptr->model_ptr->copyNTrianglesFrom(modelInfo_ptr->numberTriangles,
+                                                  modelInfo_ptr->originalTringlesArray);
+        RZ_TRACE("Atualizando quantidade de triangulos...");
+        renderInfo_ptr->numVertices = 3 * renderInfo_ptr->model_ptr->getNumberTriangles();
+        
+        RZ_TRACE("Atualizando Buffer Posicao...");
+
+        glBindBuffer(GL_ARRAY_BUFFER, renderInfo_ptr->Buffers[PosBuffer]);
+        glBufferData(GL_ARRAY_BUFFER, renderInfo_ptr->numVertices * sizeof(glm::vec4)
+            , renderInfo_ptr->model_ptr->posBuffer
+            , GL_STATIC_DRAW);
+
+        glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(vPosition);
+    }
+    else {
+        RZ_TRACE("para usar close2GL... \n-> copiando triangulos para o buffer para c2GL:");
+        renderInfo_ptr->model_ptr->copyNTrianglesFrom(modelInfo_ptr->numberTriangles,
+                                                  modelInfo_ptr->transformedTringlesArray);
+        RZ_TRACE("Atualizando quantidade de triangulos...");
+        renderInfo_ptr->numVertices = 3 * modelInfo_ptr->numberCurrentlyVisibleTriangles;
+
+        RZ_TRACE("Atualizando Buffer Posicao...");
+
+        int sizeVisibleVertices = sizeof(glm::vec4) * 
+                             renderInfo_ptr->modelInfo_ptr->numberCurrentlyVisibleTriangles;
+
+        glBindBuffer(GL_ARRAY_BUFFER, renderInfo_ptr->Buffers[PosBuffer]);
+        glBufferData(GL_ARRAY_BUFFER, sizeVisibleVertices,
+            &modelInfo_ptr->transformedTringlesArray->vertexes->position, GL_STATIC_DRAW);
+
+        RZ_TRACE("Ligando array de atributos de vertex das posicoes...");
+
+        glVertexAttribPointer(vPosition, 4, GL_FLOAT, GL_FALSE, 0, BUFFER_OFFSET(0));
+        glEnableVertexAttribArray(vPosition);
+    }
+
+    renderInfo_ptr->useOglLastFrame = renderInfo_ptr->useOgl;
+    RZ_INFO("Informacao de triangulos atualizada");
 }
 
 void error_callback(int error, const char* description)
@@ -325,7 +372,7 @@ int renderSimple(renderInfo_t renderInfo) {
     {
         glClearBufferfv(GL_COLOR, 0, renderInfo.clearColor);
 
-        glBindVertexArray(renderInfo.VAO);
+        glBindVertexArray(renderInfo.VAOs[Triangles]);
 
         glDrawArrays(renderInfo.mode, 0, renderInfo.numVertices);
 
@@ -362,7 +409,7 @@ int renderWithCamera(renderInfo_t* renderInfo, CameraZ camera
 
         glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
 
-        glBindVertexArray(renderInfo->VAO);
+        glBindVertexArray(renderInfo->VAOs[Triangles]);
 
         glDrawArrays(renderInfo->mode, 0, renderInfo->numVertices);
 
@@ -424,7 +471,7 @@ int renderWithCameraAndModel(renderInfo_t* renderInfo, CameraZ camera, glm::mat4
         glClearBufferfv(GL_COLOR, 0, renderInfo->clearColor);
         glClearBufferfv(GL_DEPTH, 0, &clearToThisDepth);
         
-        glBindVertexArray(renderInfo->VAO);
+        glBindVertexArray(renderInfo->VAOs[Triangles]);
 
         glDrawArrays(renderInfo->modes[renderInfo->mode], 0, renderInfo->numVertices);
 

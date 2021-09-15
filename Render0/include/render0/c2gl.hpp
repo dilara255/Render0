@@ -41,10 +41,11 @@ namespace c2gl {
 		mz::triangle_t* originalTringlesArray;
 		mz::triangle_t* transformedTringlesArray;
 		int numberTriangles;
+		int numberCurrentlyVisibleTriangles;
 	} c2glModelInfo_t;
 
 	static c2glModelInfo_t modelInfo;
-	void initModelInfo(mz::ModelZ* originalModel_ptr);
+	c2glModelInfo_t* initModelInfo(mz::ModelZ* originalModel_ptr);
 
 	glm::mat4 perspectiveProjection(float fovVert, float fovHor,
 			                        float nearDist, float farDist);

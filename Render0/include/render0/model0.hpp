@@ -67,6 +67,9 @@ namespace mz {
 		int ModelZ::getNumberMaterials();
 		void ModelZ::copyNTrianglesTo(int numberTriangles, 
 			                          triangle_t* destinationTriangles_ptr);
+		void ModelZ::copyNTrianglesFrom(int numberTriangles,
+										triangle_t* sourceTriangles_ptr);
+
 
 		glm::vec4* posBuffer;
 		glm::vec4* normBuffer;

@@ -14,6 +14,7 @@
 #include "camera.hpp"
 #include "input0.hpp"
 #include "model0.hpp"
+#include "c2gl.hpp"
   
 #define BUFFER_OFFSET(a) ((void*)(a))
 #define NUMBER_SHADERS 3
@@ -43,22 +44,29 @@ typedef struct windowParams_st {
 
 typedef struct renderInfo_st {
     rz::colorf_t clearColor;
-    GLuint VAO;
     GLuint numVertices;
     GLFWwindow* window;
     int mode;
     CameraZ* cameraState_ptr;
     mz::ModelZ* model_ptr = (mz::ModelZ * )NULL;
+    GLuint  VAOs[NumVAOs];
+    GLuint  Buffers[NumBuffersWithModels];
+
     int modes[3] = { GL_TRIANGLES , GL_LINE_LOOP , GL_POINTS };
     int faceDirectionForCulling = GL_CW; //GL_CCW
     bool shouldCull = true;
     glm::vec4 colorForUniform = glm::vec4(0.55f, 0.1f, 0.85f, 1.f);
     GLint uniformLocations[NUMBER_UNIFORMS];
     windowParams_t windowParameters;
-    //provavelmente seja melhor criar um estado de render eventualmente
+
+    //provavelmente seja melhor dividir esse estado eventualmente
+    //tem coisas que são específicas do modelo/da call, outras mias gerais do renderer
     int swapInterval = 0;
     float frameTimeMS = 1;
     int shadingToUse = SIMPLE_MVP;
+    bool useOgl = true;
+    bool useOglLastFrame = false;
+    c2gl::c2glModelInfo_t* modelInfo_ptr;
 } renderInfo_t;
 
 typedef struct vertexDataCP_st {
@@ -97,8 +105,10 @@ GLuint LoadShaders(shaderInfo_t* shaders);
 void initShaderPrograms();
 renderInfo_t setupRenderInfoCameraModelSimple(CameraZ* camera_ptr, mz::ModelZ* model_ptr);
 
+void updateWhichTrianglesToRender(renderInfo_t* renderInfo);
+
 void setupRender(renderInfo_t* renderInfo);
-bool renderOgl(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
+bool render(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr, float* modelMatrixStart_ptr,
             void (*controlTest) (CameraZ* camera_ptr, renderInfo_t* renderInfo_ptr));
 
 void mainLoop(renderInfo_t* renderInfo_ptr, CameraZ* camera_ptr,

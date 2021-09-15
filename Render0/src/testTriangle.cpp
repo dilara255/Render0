@@ -89,12 +89,13 @@ renderInfo_t setupTestTriangleToRender(int shader)
         black[1],
         black[2],
         black[3],
-        VAOs[Triangles],
         NumVertices,
         renderWindow.window,
         GL_TRIANGLE_STRIP
         //GL_LINE_LOOP GL_POINTS
     };
+
+    &renderInfo.VAOs[0] = &VAOs[0];
 
     return renderInfo;
 }

@@ -2,22 +2,33 @@
 
 namespace c2gl {
 
-	void initModelInfo(mz::ModelZ* originalModel_ptr) {
+	c2glModelInfo_t* initModelInfo(mz::ModelZ* originalModel_ptr) {
 		RZ_TRACE("Obtendo informacoes de modelo para renderer c2Gl...");
 		modelInfo.originalModel_ptr = originalModel_ptr;
 		
 		modelInfo.numberTriangles = originalModel_ptr->getNumberTriangles();
+		modelInfo.numberCurrentlyVisibleTriangles = modelInfo.numberTriangles;
+
 		int sizeTrianglesArray = modelInfo.numberTriangles * sizeof(mz::triangle_t);
+
+		RZ_TRACE("Alocando memoria...");
 
 		modelInfo.originalTringlesArray = (mz::triangle_t*)malloc(sizeTrianglesArray);
 		modelInfo.transformedTringlesArray = (mz::triangle_t*)malloc(sizeTrianglesArray);
 		
+		RZ_TRACE("Copiando informacoes de posicao e normal...");
 		originalModel_ptr->copyNTrianglesTo(modelInfo.numberTriangles, 
 			                                modelInfo.originalTringlesArray);
+		RZ_TRACE("fazendo segunda copia, para transformacao...");
 		originalModel_ptr->copyNTrianglesTo(modelInfo.numberTriangles,
 										    modelInfo.transformedTringlesArray);
 
+		RZ_TRACE("Atualizando numero de triangulos...");
+		modelInfo.numberCurrentlyVisibleTriangles = modelInfo.numberTriangles;
+
 		RZ_INFO("Dados copiados e memoria para manipulacao reservada");
+
+		return &modelInfo;
 	}
 
 	//ESCREVER MATRIZ!
@@ -25,7 +36,6 @@ namespace c2gl {
 		float nearDist, float farDist) {
 
 		return glm::perspective(fovVert, 640 / 480.f, fabs(nearDist), fabs(farDist));
-
 	}
 
 	glm::mat4 orthogonalProjection(float orthoDistance, float screenRatio,
@@ -57,7 +67,9 @@ namespace c2gl {
 
 	void applyClippingOnZ(renderArea_t renderArea) {
 
-		for (int i = 0; i < modelInfo.numberTriangles; i++) {
+		modelInfo.numberCurrentlyVisibleTriangles = modelInfo.numberTriangles;
+
+		for (int i = 0; i < modelInfo.numberCurrentlyVisibleTriangles; i++) {
 			bool shouldCut = false;
 
 			for (int j = 0; j < 3; j++) {
@@ -82,14 +94,14 @@ namespace c2gl {
 			}
 
 			modelInfo.transformedTringlesArray[i] = modelInfo.transformedTringlesArray[i + cutCount];
-			modelInfo.numberTriangles -= cutCount;
+			modelInfo.numberCurrentlyVisibleTriangles -= cutCount;
 
 			i += cutCount;
 		}
 	}
 
 	void applyPerspectiveDivision() {
-		for (int i = 0; i < modelInfo.numberTriangles; i++) {
+		for (int i = 0; i < modelInfo.numberCurrentlyVisibleTriangles; i++) {
 			for (int j = 0; j < 3; j++) {
 				modelInfo.transformedTringlesArray[i].vertexes[j].position /=
 					modelInfo.transformedTringlesArray[i].vertexes[j].position.w;

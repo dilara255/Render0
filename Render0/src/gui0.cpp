@@ -223,13 +223,6 @@ namespace gz {
         ImGui::Checkbox("Vsync", &controlVariables.useVsync.currentState);
         
         toggleOptions(controlVariables.faceOrientation);
-        if (controlVariables.faceOrientationArr[0].currentState != controlVariables.faceOrientationArr[0].lastState) {
-            printf("\n%i %i %i %i",
-                controlVariables.faceOrientationArr[0].currentState,
-                controlVariables.faceOrientationArr[0].lastState,
-                controlVariables.faceOrientationArr[1].currentState,
-                controlVariables.faceOrientationArr[1].lastState);
-        }
         toggleOptions(controlVariables.projection);
         toggleOptions(controlVariables.renderer);
         toggleOptions(controlVariables.shader);
