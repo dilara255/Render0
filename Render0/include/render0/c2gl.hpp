@@ -54,15 +54,21 @@ namespace c2gl {
 
 	c2glModelInfo_t* initModelInfo(mz::ModelZ* originalModel_ptr);
 
+	void prerender(CameraZ* cam_ptr, c2glModelInfo_t* modelInfo_ptr);
+
 	glm::mat4 perspectiveProjection(float fovVert, float fovHor,
 			                        float nearDist, float farDist);
 		
-	glm::mat4 orthogonalProjection(float orthoDistance, float screenRatio,
+	glm::mat4 orthogonalProjection(float top, float right,
 								   float nearDist, float farDist);
 
-	void applyMVP(glm::mat4 viewProjMatrix, glm::mat4 modelMatrix);
-	
-	void applyClippingOnZ(renderArea_t renderArea);
+	glm::mat4 constructViewProjectionMatrix(CameraZ cam);
 
-	void applyPerspectiveDivision();
+	void applyMVP(glm::mat4 viewProjMatrix, glm::mat4 modelMatrix, 
+		          c2glModelInfo_t* modelInfo_ptr);
+	
+	void applyClippingOnZ(renderArea_t renderArea,
+		                  c2glModelInfo_t* modelInfo_ptr);
+
+	void applyPerspectiveDivision(c2glModelInfo_t* modelInfo_ptr);
 }

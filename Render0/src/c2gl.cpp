@@ -55,31 +55,29 @@ namespace c2gl {
 		return glm::perspective(fovVert, 640 / 480.f, fabs(nearDist), fabs(farDist));
 	}
 
-	glm::mat4 orthogonalProjection(float orthoDistance, float screenRatio,
-		float nearDist, float farDist) {
+	glm::mat4 orthogonalProjection(float top, float right,
+								   float nearDist, float farDist) {
 
-		float top = orthoDistance;
 		float bottom = -top;
-		float right = top * screenRatio;
 		float left = -right;
-		float farD = farDist;
-		float nearD = nearDist;
 
-		return glm::ortho(left, right, bottom, top, nearD, farD);
+		return glm::ortho(left, right, bottom, top, nearDist, farDist);
 	}
 
-	void applyMVP(glm::mat4 viewProjMatrix, glm::mat4 modelMatrix) {
+	void applyMVP(glm::mat4 viewProjMatrix, glm::mat4 modelMatrix, 
+				  c2glModelInfo_t* modelInfo_ptr) {
+
 		glm::mat4 MVP = viewProjMatrix * modelMatrix;
 
-		for (int i = 0; i < modelInfo.numberTriangles; i++) {
-			modelInfo.transformedFaceNormals[i] =
-				MVP * modelInfo.originalFaceNormals[i];
+		for (int i = 0; i < modelInfo_ptr->numberTriangles; i++) {
+			modelInfo_ptr->transformedFaceNormals[i] =
+				MVP * modelInfo_ptr->originalFaceNormals[i];
 
 			for (int j = 0; j < 3; j++) {
 				int index = (3 * i) + j;
 
-				modelInfo.transformedPositions[index] =
-					MVP * modelInfo.originalPositions[index];
+				modelInfo_ptr->transformedPositions[index] =
+					MVP * modelInfo_ptr->originalPositions[index];
 			}
 		}
 	}
@@ -94,17 +92,17 @@ namespace c2gl {
 		return shouldCut;
 	}
 
-	void applyClippingOnZ(renderArea_t renderArea) {
+	void applyClippingOnZ(renderArea_t renderArea, c2glModelInfo_t* modelInfo_ptr) {
 
-		modelInfo.numberCurrentlyVisibleTriangles = modelInfo.numberTriangles;
+		modelInfo_ptr->numberCurrentlyVisibleTriangles = modelInfo_ptr->numberTriangles;
 
-		for (int i = 0; i < modelInfo.numberCurrentlyVisibleTriangles; i++) {
+		for (int i = 0; i < modelInfo_ptr->numberCurrentlyVisibleTriangles; i++) {
 			bool shouldCut = false;
 
 			for (int j = 0; j < 3; j++) {
 				int index = (3 * i) + j;
 
-				shouldCut |= isOutsideNearFar(renderArea, modelInfo.transformedPositions[index].z);
+				shouldCut |= isOutsideNearFar(renderArea, modelInfo_ptr->transformedPositions[index].z);
 			}
 
 			int cutCount = 0;
@@ -116,26 +114,50 @@ namespace c2gl {
 				for (int j = 0; j < 3; j++) {
 					int index = ( 3 * (i + cutCount) ) + j;
 
-					shouldCut |= isOutsideNearFar(renderArea, modelInfo.transformedPositions[index].z);
+					shouldCut |= isOutsideNearFar(renderArea, modelInfo_ptr->transformedPositions[index].z);
 				}
 			}
 
-			modelInfo.transformedPositions[i] = modelInfo.transformedPositions[i + cutCount];
-			modelInfo.transformedNormals[i] = modelInfo.transformedNormals[i + cutCount];
-			modelInfo.numberCurrentlyVisibleTriangles -= cutCount;
+			modelInfo_ptr->transformedPositions[i] = modelInfo_ptr->transformedPositions[i + cutCount];
+			modelInfo_ptr->transformedNormals[i] = modelInfo_ptr->transformedNormals[i + cutCount];
+			modelInfo_ptr->numberCurrentlyVisibleTriangles -= cutCount;
 
 			i += cutCount;
 		}
 	}
 
-	void applyPerspectiveDivision() {
-		for (int i = 0; i < modelInfo.numberCurrentlyVisibleTriangles; i++) {
+	void applyPerspectiveDivision(c2glModelInfo_t* modelInfo_ptr) {
+		for (int i = 0; i < modelInfo_ptr->numberCurrentlyVisibleTriangles; i++) {
 			for (int j = 0; j < 3; j++) {
 				int index = (3 * i) + j;
 
-				modelInfo.transformedPositions[index] /=
-					modelInfo.transformedPositions[index].w;
+				modelInfo_ptr->transformedPositions[index] /=
+					modelInfo_ptr->transformedPositions[index].w;
 			}
 		}
+	}
+
+	glm::mat4 constructViewProjectionMatrix(CameraZ cam) {
+		glm::mat4 viewProj;
+
+		if (cam.perspectiveIsOn()) {
+			viewProj = perspectiveProjection(cam.getFovVer(), cam.getFovHor(),
+				cam.getNearDist(), cam.getFarDist());
+		}
+		else {
+			renderArea_st renderArea = cam.getRenderArea();
+			viewProj = orthogonalProjection(renderArea.top, renderArea.right,
+										    renderArea.nearDist, renderArea.farDist);
+		}
+
+		return (viewProj * cam.getViewMatrix());
+	}
+
+	void prerender(CameraZ* cam_ptr, c2glModelInfo_t* modelInfo_ptr) {
+		glm::mat4 viewProj = constructViewProjectionMatrix(*cam_ptr);
+		
+		applyMVP(viewProj, glm::mat4(1), modelInfo_ptr);
+		applyClippingOnZ(cam_ptr->getRenderArea(), modelInfo_ptr);
+		applyPerspectiveDivision(modelInfo_ptr);
 	}
 }

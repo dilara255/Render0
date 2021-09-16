@@ -38,12 +38,12 @@ typedef struct cameraState_st {
 //////////////////////
 //Utilizar na CameraZ
 typedef struct renderArea_st {
-	int left;
-	int right;
-	int bottom;
-	int top;
-	int nearDist;
-	int farDist;
+	float left;
+	float right;
+	float bottom;
+	float top;
+	float nearDist;
+	float farDist;
 } renderArea_t;
 //////////////////////
 
@@ -81,6 +81,10 @@ public:
 
 	void updateCameraMatrix();
 	glm::mat4 getCameraMatrix();
+
+	glm::mat4 getViewMatrix();
+
+	renderArea_t getRenderArea();
 
 	radians getNearDist();
 	radians getFarDist();

@@ -9,11 +9,17 @@ void mainLoop(renderInfo_t*  renderInfo_ptr, CameraZ* camera_ptr,
 	RZ_INFO("Iniciando loop principal");
 
 	while (keepRunning) {
+		
 		if (renderInfo_ptr->useOgl != renderInfo_ptr->useOglLastFrame) {
 			updateWhichTrianglesToRender(renderInfo_ptr);
 		}
+		if (!renderInfo_ptr->useOgl) {
+			c2gl::prerender(camera_ptr, renderInfo_ptr->modelInfo_ptr);
+		}
 		keepRunning = render(renderInfo_ptr, camera_ptr, modelMatrixStart_ptr, controlTest);
+		
 		iz::processInput();
+
 		controlTest(camera_ptr, renderInfo_ptr);
 	}
 

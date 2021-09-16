@@ -190,8 +190,38 @@ bool CameraZ::perspectiveIsOn() {
 	return this->state.perspectiveOn;
 }
 
+
 glm::mat4 CameraZ::getCameraMatrix() {
 	return this->state.cameraMatrix;
+}
+
+glm::mat4 CameraZ::getViewMatrix() {
+	return this->state.view;
+}
+
+//tem que rever isso aqui, acho que tá inutil na real e não tá aplicado pra posição da camera, claro
+renderArea_t CameraZ::getRenderArea() {
+	renderArea_t renderArea;
+
+	renderArea.nearDist = this->getNearDist();
+	renderArea.farDist = this->getFarDist();
+
+	float halfVertLenghtAtNear = sin(this->getFovVer() / 2.0f) * renderArea.nearDist;
+	float halfHorLenghtAtNear = sin(this->getFovHor() / 2.0f) * renderArea.nearDist;
+
+	if (this->perspectiveIsOn()) {
+		renderArea.top = halfVertLenghtAtNear;
+		renderArea.right = halfHorLenghtAtNear;
+	}
+	else {
+		renderArea.top = this->state.orthoDistance;
+		renderArea.right = halfHorLenghtAtNear / halfVertLenghtAtNear * renderArea.top;
+
+	}
+	renderArea.bottom = -renderArea.top;
+	renderArea.left = -renderArea.right;
+
+	return renderArea;
 }
 
 radians CameraZ::getNearDist() {
